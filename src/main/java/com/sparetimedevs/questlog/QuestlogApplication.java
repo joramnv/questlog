@@ -32,12 +32,6 @@ import java.util.List;
 import static com.google.common.collect.Lists.newArrayList;
 import static springfox.documentation.schema.AlternateTypeRules.newRule;
 
-/**
- * http://localhost:8080/console
- * http://localhost:8080/swagger-ui.html
- * https://springfox.github.io/springfox/docs/current/
- * https://spring.io/guides/gs/rest-hateoas/
- **/
 @SpringBootApplication
 @EnableSwagger2
 @Import({ springfox.documentation.spring.data.rest.configuration.SpringDataRestConfiguration.class })
