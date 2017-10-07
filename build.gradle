@@ -3,18 +3,38 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.7.RELEASE")
+        classpath("org.junit.platform:junit-platform-gradle-plugin:1.0.2")
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.9.RELEASE")
     }
 }
 
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
+apply plugin: 'org.junit.platform.gradle.plugin'
 apply plugin: 'org.springframework.boot'
 
 jar {
     baseName = 'gs-accessing-data-rest'
     version = '0.1.0'
+}
+
+junitPlatform {
+    // platformVersion '1.0.2'
+    filters {
+        engines {
+            // include 'junit-jupiter', 'junit-vintage'
+            // exclude 'custom-engine'
+        }
+        tags {
+            // include 'fast'
+            exclude 'slow'
+        }
+        // includeClassNamePattern '.*Test'
+    }
+    // enableStandardTestTask true
+    // reportsDir file('build/test-results/junit-platform') // this is the default
+    logManager 'org.apache.logging.log4j.jul.LogManager'
 }
 
 repositories {
@@ -28,10 +48,15 @@ targetCompatibility = 1.8
 dependencies {
     compile("org.springframework.boot:spring-boot-starter-data-rest")
     compile("org.springframework.boot:spring-boot-starter-data-jpa")
+    compile('org.springframework.data:spring-data-rest-hal-browser')
     compile("com.h2database:h2")
     compile("io.springfox:springfox-swagger2:2.7.0")
     compile("io.springfox:springfox-data-rest:2.7.0")
     compile('io.springfox:springfox-swagger-ui:2.7.0')
-    testCompile("org.springframework.boot:spring-boot-starter-test")
-}
 
+    testCompile("org.junit.jupiter:junit-jupiter-api:5.0.2")
+    testCompile("org.mockito:mockito-core:2.12.0")
+    testCompile("org.springframework.boot:spring-boot-starter-test")
+
+    testRuntime("org.junit.jupiter:junit-jupiter-engine:5.0.2")
+}

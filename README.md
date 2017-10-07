@@ -2,11 +2,16 @@
 
 Some information about this project
 
+### Self discoverable via HAL-browser at:
+
+* http://localhost:8080/
+
 
 #### Spring HATEOAS
 
 * https://spring.io/guides/gs/rest-hateoas/
 * https://spring.io/guides/gs/accessing-data-rest/
+* https://docs.spring.io/spring-data/rest/docs/current/reference/html/#projections-excerpts
 
 
 #### H2 Database

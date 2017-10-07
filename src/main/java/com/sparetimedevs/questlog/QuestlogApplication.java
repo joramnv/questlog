@@ -118,5 +118,4 @@ public class QuestlogApplication {
 				true,         // showRequestHeaders    => true | false
 				60000L);      // requestTimeout => in milliseconds, defaults to null (uses jquery xh timeout)
 	}
-
 }
