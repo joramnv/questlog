@@ -1,2 +1,4 @@
-INSERT INTO USER (email_address) VALUES ('the_first@e-mail.address');
-INSERT INTO USER_PASSWORD (id, user_email_address, password) VALUES (1, 'the_first@e-mail.address', 'w8word');
+INSERT INTO USER (ID, EMAIL_ADDRESS) VALUES (1, 'the_first@e-mail.address');
+INSERT INTO USER_PASSWORD (ID, PASSWORD, USER_EMAIL_ADDRESS) VALUES (1, 'w8word', 'the_first@e-mail.address');
+INSERT INTO QUEST (ID, ACHIEVEMENT_POINT, DESCRIPTION, NAME, USER_EMAIL_ADDRESS) VALUES (1, 50, 'Vacuum cleaning the entire apartement, not a single corner excluded', 'Vacuum cleaning', 'the_first@e-mail.address');
+INSERT INTO QUEST (ID, ACHIEVEMENT_POINT, DESCRIPTION, NAME, USER_EMAIL_ADDRESS) VALUES (2, 10, 'Doing the morning dishes; couple of plates, cups and cutlery.', 'Do the dishes', 'the_first@e-mail.address');
