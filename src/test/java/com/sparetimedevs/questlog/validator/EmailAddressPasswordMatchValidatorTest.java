@@ -1,6 +1,6 @@
 package com.sparetimedevs.questlog.validator;
 
-import com.sparetimedevs.questlog.testsupport.MockitoExtension;
+import testsupport.MockitoExtension;
 import com.sparetimedevs.questlog.user.User;
 import com.sparetimedevs.questlog.userpassword.UserPassword;
 import com.sparetimedevs.questlog.userpassword.UserPasswordRepository;
