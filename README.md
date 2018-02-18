@@ -4,7 +4,7 @@ Some information about this project
 
 ### Self discoverable via HAL-browser at:
 
-* http://localhost:8080/
+* http://localhost:8090/
 
 
 #### Spring HATEOAS
@@ -16,13 +16,7 @@ Some information about this project
 
 #### H2 Database
 
-* http://localhost:8080/console
-
-
-#### Swagger - Springfox
-
-* http://localhost:8080/swagger-ui.html
-* https://springfox.github.io/springfox/docs/current/
+* http://localhost:8090/console
 
 
 #### Run the application from the terminal:
