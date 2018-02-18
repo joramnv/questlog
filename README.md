@@ -41,7 +41,7 @@ You can build the JAR file using:
 
 Then you can run the JAR file:
 
-`$ java -jar build/libs/gs-accessing-data-rest-0.1.0.jar`
+`$ java -jar build/libs/weekly-achievement-points-0.0.1.jar`
 
 
 #### Interesting links:
@@ -50,3 +50,5 @@ Then you can run the JAR file:
 * http://blog.ploeh.dk/2013/05/01/rest-lesson-learned-avoid-hackable-urls/
 * https://stackoverflow.com/questions/24389733/document-hal-links-from-spring-hateoas-with-swagger
 * http://haltalk.herokuapp.com/explorer/browser.html#/
+* https://en.wikipedia.org/wiki/OAuth
+* https://en.wikipedia.org/wiki/OpenID
