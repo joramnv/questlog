@@ -1,5 +1,7 @@
 package integrationtest.com.sparetimedevs.questlog.functional.quest;
 
+import com.sparetimedevs.questlog.quest.Quest;
+import com.sparetimedevs.questlog.quest.QuestRepository;
 import com.sparetimedevs.questlog.user.User;
 import com.sparetimedevs.questlog.user.UserRepository;
 import integrationtest.com.sparetimedevs.questlog.functional.AbstractQuestlogApplicationIT;
@@ -28,19 +30,35 @@ public class QuestRepositoryIT extends AbstractQuestlogApplicationIT {
 	private MockMvc mockMvc;
 
 	@Autowired
+	private QuestRepository questRepository;
+
+	@Autowired
 	private UserRepository userRepository;
 
 	@Before
 	public void setUp() throws Exception {
 		mockMvc = getMockMvc();
+		User user = setUpUser();
+		Quest quest = setUpQuest(user);
+	}
+
+	private User setUpUser() {
+		User user = new User();
+		user.setEmailAddress(TEST_EMAIL_ADDRESS_1);
+		return userRepository.save(user);
+	}
+
+	private Quest setUpQuest(User user) {
+		Quest quest = new Quest();
+		quest.setUser(user);
+		quest.setName("Always Be Cool");
+		quest.setDescription("This started with ABC and the rest is history.");
+		quest.setAchievementPoint(22L);
+		return quest;
 	}
 
 	@After
 	public void tearDown() throws Exception {
-		User user = userRepository.findByEmailAddress(TEST_EMAIL_ADDRESS_1);
-		if (user != null) {
-			userRepository.delete(user);
-		}
 	}
 
 	@Test
