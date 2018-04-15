@@ -3,9 +3,10 @@ package integrationtest.com.sparetimedevs.questlog.functional.user;
 import com.sparetimedevs.questlog.user.User;
 import com.sparetimedevs.questlog.user.UserRepository;
 import integrationtest.com.sparetimedevs.questlog.functional.AbstractQuestlogApplicationIT;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import java.util.Optional;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -23,42 +24,40 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class UserRepositoryIT extends AbstractQuestlogApplicationIT {
+class UserRepositoryIT extends AbstractQuestlogApplicationIT {
 
 	private MockMvc mockMvc;
 
 	@Autowired
 	private UserRepository userRepository;
 
-	@Before
-	public void setUp() throws Exception {
+	@BeforeEach
+	void setUp() throws Exception {
 		mockMvc = getMockMvc();
 	}
 
-	@After
-	public void tearDown() throws Exception {
-		User user = userRepository.findByEmailAddress(TEST_EMAIL_ADDRESS_1);
-		if (user != null) {
-			userRepository.delete(user);
-		}
+	@AfterEach
+	void tearDown() throws Exception {
+		Optional<User> optionalUser = userRepository.findByEmailAddress(TEST_EMAIL_ADDRESS_1);
+		optionalUser.ifPresent(user -> userRepository.delete(user));
 	}
 
 	@Test
-	public void shouldReturnRepositoryIndex() throws Exception {
+	void shouldReturnRepositoryIndex() throws Exception {
 		mockMvc.perform(get("/user")).andDo(print()).andExpect(status().isOk()).andExpect(
 				jsonPath("$._links.self").exists());
 	}
 
 	@Test
-	public void shouldCreateEntity() throws Exception {
+	void shouldCreateEntity() throws Exception {
 		mockMvc.perform(post("/user").content(
 				"{\"emailAddress\": \"" + TEST_EMAIL_ADDRESS_1 + "\"}")).andExpect(
 				status().isCreated()).andExpect(
-				header().string("Location", containsString("user/")));
+				header().string("Location", containsString("user/" + TEST_EMAIL_ADDRESS_1)));
 	}
 
 	@Test
-	public void shouldRetrieveEntity() throws Exception {
+	void shouldRetrieveEntity() throws Exception {
 		MvcResult mvcResult = mockMvc.perform(post("/user").content(
 				"{\"emailAddress\": \"" + TEST_EMAIL_ADDRESS_1 + "\"}")).andExpect(
 				status().isCreated()).andReturn();
@@ -78,7 +77,7 @@ public class UserRepositoryIT extends AbstractQuestlogApplicationIT {
 	}
 
 	@Test
-	public void shouldNotUpdateEntity() throws Exception {
+	void shouldNotUpdateEntity() throws Exception {
 		MvcResult mvcResult = mockMvc.perform(post("/user").content(
 				"{\"emailAddress\": \"" + TEST_EMAIL_ADDRESS_1 + "\"}")).andExpect(
 				status().isCreated()).andReturn();
@@ -107,7 +106,7 @@ public class UserRepositoryIT extends AbstractQuestlogApplicationIT {
 	}
 
 	@Test
-	public void shouldNotPartiallyUpdateEntity() throws Exception {
+	void shouldNotPartiallyUpdateEntity() throws Exception {
 		MvcResult mvcResult = mockMvc.perform(post("/user").content(
 				"{\"emailAddress\": \"" + TEST_EMAIL_ADDRESS_1 + "\"}")).andExpect(
 				status().isCreated()).andReturn();
@@ -136,7 +135,7 @@ public class UserRepositoryIT extends AbstractQuestlogApplicationIT {
 	}
 
 	@Test
-	public void shouldDeleteEntity() throws Exception {
+	void shouldDeleteEntity() throws Exception {
 		MvcResult mvcResult = mockMvc.perform(post("/user").content(
 				"{\"emailAddress\": \"" + TEST_EMAIL_ADDRESS_1 + "\"}")).andExpect(
 				status().isCreated()).andReturn();
@@ -145,5 +144,13 @@ public class UserRepositoryIT extends AbstractQuestlogApplicationIT {
 		mockMvc.perform(delete(location)).andExpect(status().isNoContent());
 
 		mockMvc.perform(get(location)).andExpect(status().isNotFound());
+	}
+
+	@Test
+	void shouldReturnStatusIsNotFoundWhenTryingToGetAnEntityThatIsNotPresentInTheDatabase() throws Exception {
+		String uri = "http://localhost/user/" + TEST_EMAIL_ADDRESS_1;
+//		String uri = "http://localhost/" + TEST_EMAIL_ADDRESS_1;
+
+		mockMvc.perform(get(uri)).andExpect(status().isNotFound());
 	}
 }

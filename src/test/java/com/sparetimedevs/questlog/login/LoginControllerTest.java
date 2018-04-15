@@ -1,6 +1,7 @@
 package com.sparetimedevs.questlog.login;
 
-import com.sparetimedevs.questlog.validator.EmailAddressPasswordMatchValidator;
+import com.sparetimedevs.questlog.login.validator.EmailAddressPasswordDoNotMatchException;
+import com.sparetimedevs.questlog.login.validator.LoginValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -40,6 +41,7 @@ class LoginControllerTest {
 
 	private static final String TEST_EMAIL_ADDRESS_1 = "test@e-mail.address";
 	private static final String TEST_PASSWORD_1 = "test_password";
+	private static final Login TEST_LOGIN_1 = new Login(TEST_EMAIL_ADDRESS_1, TEST_EMAIL_ADDRESS_1);
 
 	@Autowired
 	private MockMvc mockMvc;
@@ -48,7 +50,7 @@ class LoginControllerTest {
 	private RepositoryEntityLinks entityLinks;
 
 	@MockBean
-	private EmailAddressPasswordMatchValidator emailAddressPasswordMatchValidator;
+	private LoginValidator loginValidator;
 
 	@BeforeEach
 	void setUp() {
@@ -92,7 +94,8 @@ class LoginControllerTest {
 
 	@Test
 	void givenCorrectEmailAddressAndPasswordWhenPerformingPostToLoginResultsInLinksToUsersQuestsAndSavePassword() throws Exception {
-		doNothing().when(emailAddressPasswordMatchValidator).validate(TEST_EMAIL_ADDRESS_1, TEST_PASSWORD_1);
+		Login login = new Login();
+		doNothing().when(loginValidator).validate(TEST_LOGIN_1);
 
 		mockMvc.perform(
 				post("/login")
@@ -110,7 +113,7 @@ class LoginControllerTest {
 	//TODO fix error handeling, then fix this test
 	@Test
 	void givenWrongEmailAddressAndPasswordWhenPerformingPostToLoginResultsInGracefulErrorMessage() throws Exception {
-		doThrow(IllegalArgumentException.class).when(emailAddressPasswordMatchValidator).validate(TEST_EMAIL_ADDRESS_1, TEST_PASSWORD_1);
+		doThrow(EmailAddressPasswordDoNotMatchException.class).when(loginValidator).validate(TEST_LOGIN_1);
 
 		mockMvc.perform(
 				post("/login")

@@ -2,7 +2,7 @@ package com.sparetimedevs.questlog.login;
 
 import com.sparetimedevs.questlog.quest.Quest;
 import com.sparetimedevs.questlog.userpassword.UserPasswordController;
-import com.sparetimedevs.questlog.validator.EmailAddressPasswordMatchValidator;
+import com.sparetimedevs.questlog.login.validator.LoginValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.support.RepositoryEntityLinks;
 import org.springframework.hateoas.Link;
@@ -30,19 +30,19 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public class LoginController {
 
 	private final RepositoryEntityLinks entityLinks;
-	private final EmailAddressPasswordMatchValidator emailAddressPasswordMatchValidator;
+	private final LoginValidator loginValidator;
 
 	@Autowired
-	public LoginController(RepositoryEntityLinks entityLinks, EmailAddressPasswordMatchValidator emailAddressPasswordMatchValidator) {
+	public LoginController(RepositoryEntityLinks entityLinks, LoginValidator loginValidator) {
 		this.entityLinks = entityLinks;
-		this.emailAddressPasswordMatchValidator = emailAddressPasswordMatchValidator;
+		this.loginValidator = loginValidator;
 	}
 
 	@RequestMapping(method = RequestMethod.POST, consumes = APPLICATION_JSON_VALUE, produces = HAL_JSON_VALUE)
 	public HttpEntity<Login> login(@RequestBody Resource<Login>  loginResource) {
 		Login login = loginResource.getContent();
 
-		emailAddressPasswordMatchValidator.validate(login.getEmailAddress(), login.getPassword());
+		loginValidator.validate(login);
 
 		Link linkToSelf = linkTo(methodOn(LoginController.class).login(loginResource)).withSelfRel();
 		Link linkToQuests = entityLinks.linkFor(Quest.class, login.getEmailAddress()).withRel("quests");
@@ -52,7 +52,7 @@ public class LoginController {
 		login.add(linkToQuests);
 		login.add(linkToUserPassword);
 
-		return new ResponseEntity<Login>(login, HttpStatus.OK);
+		return new ResponseEntity<>(login, HttpStatus.OK);
 	}
 
 	@RequestMapping(method = RequestMethod.GET, produces = HAL_JSON_VALUE)

@@ -5,8 +5,9 @@ import com.sparetimedevs.questlog.user.UserRepository;
 import com.sparetimedevs.questlog.userpassword.UserPassword;
 import com.sparetimedevs.questlog.userpassword.UserPasswordRepository;
 import integrationtest.com.sparetimedevs.questlog.functional.AbstractQuestlogApplicationIT;
-import org.junit.Before;
-import org.junit.Test;
+import java.util.Optional;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -20,7 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class LoginControllerIT extends AbstractQuestlogApplicationIT {
+class LoginControllerIT extends AbstractQuestlogApplicationIT {
 
 	@Autowired
 	private UserRepository userRepository;
@@ -30,32 +31,41 @@ public class LoginControllerIT extends AbstractQuestlogApplicationIT {
 
 	private MockMvc mockMvc;
 
-	@Before
-	public void setUp() throws Exception {
+	@BeforeEach
+	void setUp() throws Exception {
 		mockMvc = getMockMvc();
 		User user = setUpUser();
 		UserPassword userPassword = setUpUserPassword(user);
 	}
 
 	private User setUpUser() {
-		User user = new User();
-		user.setEmailAddress(TEST_EMAIL_ADDRESS_1);
-		return userRepository.save(user);
+		Optional<User> optionalUser = userRepository.findByEmailAddress(TEST_EMAIL_ADDRESS_1);
+		if (optionalUser.isPresent()) {
+			return optionalUser.get();
+		} else {
+			User user = new User(TEST_EMAIL_ADDRESS_1);
+			user = userRepository.save(user);
+			return user;
+		}
 	}
 
 	private UserPassword setUpUserPassword(User user) {
-		UserPassword userPassword = new UserPassword(user, TEST_PASSWORD_1);
-		return userPasswordRepository.save(userPassword);
+		UserPassword userPassword = userPasswordRepository.findByUser(user);
+		if (userPassword == null) {
+			userPassword = new UserPassword(user, TEST_PASSWORD_1);
+			userPassword = userPasswordRepository.save(userPassword);
+		}
+		return userPassword;
 	}
 
 	@Test
-	public void shouldReturnRepositoryIndex() throws Exception {
+	void shouldReturnRepositoryIndex() throws Exception {
 		mockMvc.perform(get("/login")).andDo(print()).andExpect(status().isOk()).andExpect(
 				jsonPath("$._links.self").exists());
 	}
 
 	@Test
-	public void givenCorrectEmailAddressAndPasswordWhenPerformingPostToLoginResultsInLinksToUsersQuestsAndSavePassword() throws Exception {
+	void givenCorrectEmailAddressAndPasswordWhenPerformingPostToLoginResultsInLinksToUsersQuestsAndSavePassword() throws Exception {
 		mockMvc.perform(
 				post("/login")
 					.header("Accept", HAL_JSON_VALUE)
@@ -71,7 +81,7 @@ public class LoginControllerIT extends AbstractQuestlogApplicationIT {
 
 	//TODO fix error handeling, then fix this test
 	@Test
-	public void givenWrongEmailAddressAndPasswordWhenPerformingPostToLoginResultsInGracefulErrorMessage() throws Exception {
+	void givenWrongEmailAddressAndPasswordWhenPerformingPostToLoginResultsInGracefulErrorMessage() throws Exception {
 		mockMvc.perform(
 				post("/login")
 						.header("Accept", HAL_JSON_VALUE)
@@ -84,10 +94,10 @@ public class LoginControllerIT extends AbstractQuestlogApplicationIT {
 	}
 
 	@Test
-	public void loginPost() {
+	void loginPost() {
 	}
 
 	@Test
-	public void loginGet() {
+	void loginGet() {
 	}
 }

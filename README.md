@@ -19,12 +19,6 @@ Some information about this project
 * http://localhost:8080/console
 
 
-#### Swagger - Springfox
-
-* http://localhost:8080/swagger-ui.html
-* https://springfox.github.io/springfox/docs/current/
-
-
 #### Run the application from the terminal:
 
 You can run the application from the terminal with the following command:

@@ -1,6 +1,6 @@
-package com.sparetimedevs.questlog.validator;
+package com.sparetimedevs.questlog.login.validator;
 
-import testsupport.MockitoExtension;
+import com.sparetimedevs.questlog.login.Login;
 import com.sparetimedevs.questlog.user.User;
 import com.sparetimedevs.questlog.userpassword.UserPassword;
 import com.sparetimedevs.questlog.userpassword.UserPasswordRepository;
@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import testsupport.MockitoExtension;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -20,7 +21,7 @@ import static org.mockito.Mockito.when;
 class EmailAddressPasswordMatchValidatorTest {
 
 	@InjectMocks
-	private EmailAddressPasswordMatchValidator emailAddressPasswordMatchValidator;
+	private LoginValidator loginValidator;
 
 	@Mock
 	private UserPasswordRepository userPasswordRepository;
@@ -29,13 +30,13 @@ class EmailAddressPasswordMatchValidatorTest {
 	void givenMatchingEmailAddressAndPasswordWhenValidateIsCalledResultsInNoException() throws Exception {
 		String emailAddress = "ab@cd.ef";
 		String password = "ghijkl";
-		User user = new User();
-		user.setEmailAddress(emailAddress);
+		User user = new User(emailAddress);
 		UserPassword userPassword = new UserPassword(user, password);
+		Login login = new Login(emailAddress, password);
 
 		when(userPasswordRepository.findByUserEmailAddress(emailAddress)).thenReturn(userPassword);
 
-		emailAddressPasswordMatchValidator.validate(emailAddress, password);
+		loginValidator.validate(login);
 
 		assertThat(userPassword.getPassword(), is(equalTo(password)));
 	}
@@ -45,15 +46,16 @@ class EmailAddressPasswordMatchValidatorTest {
 		String emailAddress = "ab@cd.ef";
 		String password = "ghijkl";
 		String notMatchingPassword = "mnopqrs";
-		User user = new User();
-		user.setEmailAddress(emailAddress);
+		User user = new User(emailAddress);
 		UserPassword userPassword = new UserPassword(user, password);
+		Login login = new Login(emailAddress, notMatchingPassword);
 
 		when(userPasswordRepository.findByUserEmailAddress(emailAddress)).thenReturn(userPassword);
 
-		assertThrows(IllegalArgumentException.class, () -> {
-			emailAddressPasswordMatchValidator.validate(emailAddress, notMatchingPassword);
+		assertThrows(EmailAddressPasswordDoNotMatchException.class, () -> {
+			loginValidator.validate(login);
 		});
 		assertThat(userPassword.getPassword(), is(not(equalTo(notMatchingPassword))));
 	}
 }
+//TODO write kotlin test?
