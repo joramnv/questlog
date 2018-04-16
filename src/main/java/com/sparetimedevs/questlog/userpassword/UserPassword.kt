@@ -23,10 +23,8 @@ data class UserPassword(
         @Column(nullable = false)
         val password: String? = null
 ) : Serializable {
-    constructor() : this(User(), ""	)
-
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user-password-sequence-generator")
     @SequenceGenerator(name = "user-password-sequence-generator", sequenceName = "USER_PASSWORD_SEQUENCE")
-    var id: Long = -1
+    private var id: Long = -1
 }

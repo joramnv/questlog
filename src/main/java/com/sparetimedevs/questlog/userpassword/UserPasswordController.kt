@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping(value = ["/save_password"])
+@RequestMapping(path = ["save_password"])
 class UserPasswordController @Autowired
 constructor(private val entityLinks: RepositoryEntityLinks, private val userRepository: UserRepository, private val userPasswordRepository: UserPasswordRepository) {
 
@@ -30,11 +30,9 @@ constructor(private val entityLinks: RepositoryEntityLinks, private val userRepo
     fun createPassword(@RequestBody loginResource: Resource<Login>?): HttpEntity<Login> {
         val login = loginResource!!.content
 
-        val optionalUser = userRepository.findByEmailAddress(login.emailAddress!!)
-		if (!optionalUser.isPresent) {
-			throw UserNotFoundException("User with e-mail address " + login.emailAddress + " not found.")
-		}
-	    val user = optionalUser.get()
+	    val user = userRepository.findByEmailAddress(login.emailAddress!!)
+			    .orElseThrow { UserNotFoundException("User with e-mail address " + login.emailAddress + " not found.") }
+
 	    val userPassword = UserPassword(user, login.password)
         try {
             userPasswordRepository.save(userPassword)
@@ -51,18 +49,16 @@ constructor(private val entityLinks: RepositoryEntityLinks, private val userRepo
     }
 
     @RequestMapping(method = [RequestMethod.PUT], consumes = [APPLICATION_JSON_VALUE], produces = [HAL_JSON_VALUE])
-    fun updatePassword(@RequestBody loginResource: Resource<Login>): HttpEntity<Login> {
+    fun updatePassword(@RequestBody loginResource: Resource<Login>): HttpEntity<Login> { //TODO do not (miss) use Login object.
         val login = loginResource.content
 
-	    val optionalUser = userRepository.findByEmailAddress(login.emailAddress!!)
-	    if (!optionalUser.isPresent) {
-		    throw UserNotFoundException("User with e-mail address " + login.emailAddress + " not found.")
-	    }
-	    val user = optionalUser.get()
+	    val user = userRepository.findByEmailAddress(login.emailAddress!!)
+			    .orElseThrow { UserNotFoundException("User with e-mail address " + login.emailAddress + " not found.") }
+
         val oldUserPassword = userPasswordRepository.findByUser(user)
-        //TODO validate if olUserPassword is found?
+		        .orElseThrow { RuntimeException("User password for e-mail address " + login.emailAddress + " not found.") } //TODO throw different error.
         val updatedPassword = UserPassword(oldUserPassword.user, login.password)
-        updatedPassword.id = oldUserPassword.id
+//        updatedPassword.id = oldUserPassword.id
         userPasswordRepository.save(updatedPassword)
 
         login.add(linkTo(methodOn(UserPasswordController::class.java).createPassword(loginResource)).withSelfRel())

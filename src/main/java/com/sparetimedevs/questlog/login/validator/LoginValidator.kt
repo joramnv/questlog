@@ -12,6 +12,7 @@ constructor( @Autowired private val userPasswordRepository: UserPasswordReposito
 
     fun validate(login: Login) {
         val userPassword = userPasswordRepository.findByUserEmailAddress(login.emailAddress)
+                .orElseThrow { RuntimeException("User password for e-mail address " + login.emailAddress + " not found.") } //TODO throw different error.
 
         if (isEmpty(userPassword) || login.password != userPassword.password) {
             throw EmailAddressPasswordDoNotMatchException("E-mail address password combination do not match for e-mail address " + login.emailAddress + ".") //TODO catch this somewhere in apiresponse and throw some api error code/response

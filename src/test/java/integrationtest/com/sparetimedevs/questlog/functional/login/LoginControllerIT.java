@@ -50,12 +50,14 @@ class LoginControllerIT extends AbstractQuestlogApplicationIT {
 	}
 
 	private UserPassword setUpUserPassword(User user) {
-		UserPassword userPassword = userPasswordRepository.findByUser(user);
-		if (userPassword == null) {
-			userPassword = new UserPassword(user, TEST_PASSWORD_1);
+		Optional<UserPassword> optionalUserPassword = userPasswordRepository.findByUser(user);
+		if (optionalUserPassword.isPresent()) {
+			return optionalUserPassword.get();
+		} else {
+			UserPassword userPassword = new UserPassword(user, TEST_PASSWORD_1);
 			userPassword = userPasswordRepository.save(userPassword);
+			return userPassword;
 		}
-		return userPassword;
 	}
 
 	@Test

@@ -11,11 +11,10 @@ import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder
 @ComponentScan(basePackages = ["com.sparetimedevs.questlog"])
 class QuestlogApplication
 
-	fun main(args: Array<String>) {
-		SpringApplication.run(QuestlogApplication::class.java, *args)
-	}
+fun main(args: Array<String>) {
+	SpringApplication.run(QuestlogApplication::class.java, *args)
+}
 
-	@Bean
-	fun objectMapperBuilder(): Jackson2ObjectMapperBuilder
-			= Jackson2ObjectMapperBuilder()
-			.modulesToInstall(KotlinModule())
+@Bean
+fun objectMapperBuilder(): Jackson2ObjectMapperBuilder
+		= Jackson2ObjectMapperBuilder().modulesToInstall(KotlinModule())

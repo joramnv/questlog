@@ -4,6 +4,7 @@ import com.sparetimedevs.questlog.login.Login;
 import com.sparetimedevs.questlog.user.User;
 import com.sparetimedevs.questlog.userpassword.UserPassword;
 import com.sparetimedevs.questlog.userpassword.UserPasswordRepository;
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -34,7 +35,7 @@ class EmailAddressPasswordMatchValidatorTest {
 		UserPassword userPassword = new UserPassword(user, password);
 		Login login = new Login(emailAddress, password);
 
-		when(userPasswordRepository.findByUserEmailAddress(emailAddress)).thenReturn(userPassword);
+		when(userPasswordRepository.findByUserEmailAddress(emailAddress)).thenReturn(Optional.of(userPassword));
 
 		loginValidator.validate(login);
 
@@ -50,7 +51,7 @@ class EmailAddressPasswordMatchValidatorTest {
 		UserPassword userPassword = new UserPassword(user, password);
 		Login login = new Login(emailAddress, notMatchingPassword);
 
-		when(userPasswordRepository.findByUserEmailAddress(emailAddress)).thenReturn(userPassword);
+		when(userPasswordRepository.findByUserEmailAddress(emailAddress)).thenReturn(Optional.of(userPassword));
 
 		assertThrows(EmailAddressPasswordDoNotMatchException.class, () -> {
 			loginValidator.validate(login);

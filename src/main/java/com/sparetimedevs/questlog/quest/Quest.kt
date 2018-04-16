@@ -22,10 +22,8 @@ data class Quest(
 
         val achievementPoint: Long
 ) {
-    constructor() : this(User(), "", "", 0	)
-
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "quest-sequence-generator")
     @SequenceGenerator(name = "quest-sequence-generator", sequenceName = "QUEST_SEQUENCE")
-    var id: Long = -1
+    private var id: Long = -1
 }

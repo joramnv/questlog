@@ -5,6 +5,7 @@ buildscript {
         kotlin_version = '1.2.31'
         junit_jupiter_version = '5.1.1'
         mockito_core_version = '2.18.0'
+        fasterxml_jackson_version = '2.9.5'
     }
     repositories {
         mavenCentral()
@@ -14,13 +15,15 @@ buildscript {
         classpath "org.springframework.boot:spring-boot-gradle-plugin:$spring_boot_version"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "org.jetbrains.kotlin:kotlin-allopen:$kotlin_version"
+        classpath "org.jetbrains.kotlin:kotlin-noarg:$kotlin_version"
     }
 }
 
 apply plugin: 'java'
 apply plugin: 'kotlin'
+apply plugin: 'kotlin-noarg'
 apply plugin: 'kotlin-spring'
-apply plugin: "kotlin-jpa"
+apply plugin: 'kotlin-jpa'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
 apply plugin: 'org.junit.platform.gradle.plugin'
@@ -53,8 +56,8 @@ dependencies {
     compile "org.springframework.boot:spring-boot-starter-data-jpa"
     compile "org.springframework.data:spring-data-rest-hal-browser"
     compile "com.h2database:h2"
-    compile "com.fasterxml.jackson.module:jackson-module-kotlin:2.9.5"
-    compile "com.fasterxml.jackson.core:jackson-annotations:2.9.5"
+    compile "com.fasterxml.jackson.module:jackson-module-kotlin:$fasterxml_jackson_version"
+    compile "com.fasterxml.jackson.core:jackson-annotations:$fasterxml_jackson_version"
 
     testCompile "org.junit.jupiter:junit-jupiter-api:$junit_jupiter_version"
     testCompile "org.mockito:mockito-core:$mockito_core_version"
