@@ -1,29 +1,21 @@
 package com.sparetimedevs.questlog.quest
 
-import com.sparetimedevs.questlog.user.User
-
+import java.util.UUID
+import javax.persistence.Column
 import javax.persistence.Entity
-import javax.persistence.GeneratedValue
-import javax.persistence.GenerationType
 import javax.persistence.Id
-import javax.persistence.JoinColumn
-import javax.persistence.ManyToOne
-import javax.persistence.SequenceGenerator
 
 @Entity
 data class Quest(
-        @ManyToOne(targetEntity = User::class, optional = false)
-        @JoinColumn(name = "USER_EMAIL_ADDRESS", referencedColumnName = "EMAIL_ADDRESS", nullable = false)
-        val user: User,
+		@Id
+		@Column(name = "ID", nullable = false,  updatable = false, unique = true)
+		val id: UUID = UUID.randomUUID(),
+
+		val userId: UUID,
 
         val name: String,
 
         val description: String,
 
         val achievementPoint: Long
-) {
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "quest-sequence-generator")
-    @SequenceGenerator(name = "quest-sequence-generator", sequenceName = "QUEST_SEQUENCE")
-    private var id: Long = -1
-}
+)

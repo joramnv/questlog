@@ -22,10 +22,14 @@ import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping(path = ["save_password"])
-class UserPasswordController @Autowired
-constructor(private val entityLinks: RepositoryEntityLinks, private val userRepository: UserRepository, private val userPasswordRepository: UserPasswordRepository) {
-
+@RequestMapping(path = ["save-password"])
+class UserPasswordController
+@Autowired
+constructor(
+		private val repositoryEntityLinks: RepositoryEntityLinks,
+		private val userRepository: UserRepository,
+		private val userPasswordRepository: UserPasswordRepository
+) {
     @RequestMapping(method = [RequestMethod.POST], consumes = [APPLICATION_JSON_VALUE], produces = [HAL_JSON_VALUE])
     fun createPassword(@RequestBody loginResource: Resource<Login>?): HttpEntity<Login> {
         val login = loginResource!!.content
@@ -42,7 +46,7 @@ constructor(private val entityLinks: RepositoryEntityLinks, private val userRepo
 
         login.add(linkTo(methodOn(UserPasswordController::class.java).createPassword(loginResource)).withSelfRel())
 
-        val link = entityLinks.linkToSingleResource(User::class.java, user.emailAddress)
+        val link = repositoryEntityLinks.linkToSingleResource(User::class.java, user.emailAddress)
         login.add(link)
 
         return ResponseEntity(login, HttpStatus.OK)
@@ -63,7 +67,7 @@ constructor(private val entityLinks: RepositoryEntityLinks, private val userRepo
 
         login.add(linkTo(methodOn(UserPasswordController::class.java).createPassword(loginResource)).withSelfRel())
 
-        val link = entityLinks.linkToSingleResource(User::class.java, user.emailAddress)
+        val link = repositoryEntityLinks.linkToSingleResource(User::class.java, user.emailAddress)
         login.add(link)
 
         return ResponseEntity(login, HttpStatus.OK)
