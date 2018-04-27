@@ -34,12 +34,12 @@ class QuestRepositoryIT extends AbstractQuestlogApplicationIT {
 	}
 
 	private User setUpUser() {
-		User user = new User(TEST_EMAIL_ADDRESS_1);
+		User user = new User(USER_ID_1, TEST_EMAIL_ADDRESS_1);
 		return userRepository.save(user);
 	}
 
 	private Quest setUpQuest(User user) {
-		return new Quest(user, "Always Be Cool", "This started with ABC and the rest is history.", 22L);
+		return new Quest(QUEST_ID_1, USER_ID_1, "Always Be Cool", "This started with ABC and the rest is history.", 22L);
 	}
 
 	@AfterEach
@@ -48,7 +48,7 @@ class QuestRepositoryIT extends AbstractQuestlogApplicationIT {
 
 	@Test
 	void shouldReturnRepositoryIndex() throws Exception {
-		mockMvc.perform(get("/quest")).andDo(print()).andExpect(status().isOk()).andExpect(
+		mockMvc.perform(get("/quests")).andDo(print()).andExpect(status().isOk()).andExpect(
 				jsonPath("$._links.self").exists());
 	}
 //TODO write specific QuestRepository tests.

@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.bind.annotation.RestController
+import java.util.UUID
 
 @RestController
 @RequestMapping(path = ["save-password"])
@@ -37,7 +38,7 @@ constructor(
 	    val user = userRepository.findByEmailAddress(login.emailAddress!!)
 			    .orElseThrow { UserNotFoundException("User with e-mail address " + login.emailAddress + " not found.") }
 
-	    val userPassword = UserPassword(user, login.password)
+	    val userPassword = UserPassword(UUID.randomUUID(), user, login.password!!)
         try {
             userPasswordRepository.save(userPassword)
         } catch (e: Exception) {
@@ -61,8 +62,7 @@ constructor(
 
         val oldUserPassword = userPasswordRepository.findByUser(user)
 		        .orElseThrow { RuntimeException("User password for e-mail address " + login.emailAddress + " not found.") } //TODO throw different error.
-        val updatedPassword = UserPassword(oldUserPassword.user, login.password)
-//        updatedPassword.id = oldUserPassword.id
+        val updatedPassword = UserPassword(oldUserPassword.id, oldUserPassword.user, login.password!!)
         userPasswordRepository.save(updatedPassword)
 
         login.add(linkTo(methodOn(UserPasswordController::class.java).createPassword(loginResource)).withSelfRel())

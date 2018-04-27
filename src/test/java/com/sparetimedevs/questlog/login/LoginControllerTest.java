@@ -2,26 +2,20 @@ package com.sparetimedevs.questlog.login;
 
 import com.sparetimedevs.questlog.login.validator.EmailAddressPasswordDoNotMatchException;
 import com.sparetimedevs.questlog.login.validator.LoginValidator;
-import org.junit.jupiter.api.BeforeEach;
+import com.sparetimedevs.questlog.user.UserService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.rest.webmvc.support.RepositoryEntityLinks;
-import org.springframework.hateoas.Identifiable;
-import org.springframework.hateoas.Link;
-import org.springframework.hateoas.LinkBuilder;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import testsupport.MockitoExtension;
 
-import java.net.URI;
+import java.util.UUID;
 
 import static org.hamcrest.Matchers.containsString;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
@@ -47,44 +41,10 @@ class LoginControllerTest {
 	private MockMvc mockMvc;
 
 	@MockBean
-	private RepositoryEntityLinks entityLinks;
-
-	@MockBean
 	private LoginValidator loginValidator;
 
-	@BeforeEach
-	void setUp() {
-		//Todo change this to return something valid
-		Link link = new Link("quests", "quests");
-
-		LinkBuilder linkBuilder = new LinkBuilder() {
-			@Override
-			public LinkBuilder slash(Object object) {
-				return null;
-			}
-
-			@Override
-			public LinkBuilder slash(Identifiable<?> identifiable) {
-				return null;
-			}
-
-			@Override
-			public URI toUri() {
-				return null;
-			}
-
-			@Override
-			public Link withRel(String rel) {
-				return link;
-			}
-
-			@Override
-			public Link withSelfRel() {
-				return link;
-			}
-		};
-		when(entityLinks.linkFor(any(), anyString())).thenReturn(linkBuilder);
-	}
+	@MockBean
+	private UserService userService;
 
 	@Test
 	void shouldReturnRepositoryIndex() throws Exception {
@@ -97,6 +57,8 @@ class LoginControllerTest {
 		Login login = new Login();
 		doNothing().when(loginValidator).validate(TEST_LOGIN_1);
 
+		when(userService.getUserId(login)).thenReturn(UUID.randomUUID());
+
 		mockMvc.perform(
 				post("/login")
 					.header("Accept", HAL_JSON_VALUE)
@@ -106,8 +68,8 @@ class LoginControllerTest {
 				)
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$._links.self").exists())
-				.andExpect(jsonPath("$._links.quests").exists())
-				.andExpect(jsonPath("$._links.save_password").exists());
+				.andExpect(jsonPath("$._links.user-quests").exists())
+				.andExpect(jsonPath("$._links.save-password").exists());
 	}
 
 	//TODO fix error handeling, then fix this test

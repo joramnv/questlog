@@ -5,11 +5,12 @@ import com.sparetimedevs.questlog.user.UserRepository;
 import com.sparetimedevs.questlog.userpassword.UserPassword;
 import com.sparetimedevs.questlog.userpassword.UserPasswordRepository;
 import integrationtest.com.sparetimedevs.questlog.functional.AbstractQuestlogApplicationIT;
-import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.Optional;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.hateoas.MediaTypes.HAL_JSON_VALUE;
@@ -43,7 +44,7 @@ class LoginControllerIT extends AbstractQuestlogApplicationIT {
 		if (optionalUser.isPresent()) {
 			return optionalUser.get();
 		} else {
-			User user = new User(TEST_EMAIL_ADDRESS_1);
+			User user = new User(USER_ID_1, TEST_EMAIL_ADDRESS_1);
 			user = userRepository.save(user);
 			return user;
 		}
@@ -54,7 +55,7 @@ class LoginControllerIT extends AbstractQuestlogApplicationIT {
 		if (optionalUserPassword.isPresent()) {
 			return optionalUserPassword.get();
 		} else {
-			UserPassword userPassword = new UserPassword(user, TEST_PASSWORD_1);
+			UserPassword userPassword = new UserPassword(USER_PASSWORD_ID_1, user, TEST_PASSWORD_1);
 			userPassword = userPasswordRepository.save(userPassword);
 			return userPassword;
 		}
@@ -77,8 +78,8 @@ class LoginControllerIT extends AbstractQuestlogApplicationIT {
 				)
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$._links.self").exists())
-				.andExpect(jsonPath("$._links.quests").exists())
-				.andExpect(jsonPath("$._links.save_password").exists());
+				.andExpect(jsonPath("$._links.user-quests").exists())
+				.andExpect(jsonPath("$._links.save-password").exists());
 	}
 
 	//TODO fix error handeling, then fix this test

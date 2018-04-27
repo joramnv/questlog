@@ -3,12 +3,13 @@ package integrationtest.com.sparetimedevs.questlog.functional.userpassword;
 import com.sparetimedevs.questlog.user.User;
 import com.sparetimedevs.questlog.user.UserRepository;
 import integrationtest.com.sparetimedevs.questlog.functional.AbstractQuestlogApplicationIT;
-import java.util.Optional;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.Optional;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -35,7 +36,7 @@ class UserPasswordControllerIT extends AbstractQuestlogApplicationIT {
 
 	@Test
 	void shouldReturnRepositoryIndex() throws Exception {
-		mockMvc.perform(get("/save_password")).andDo(print()).andExpect(status().isOk()).andExpect(
+		mockMvc.perform(get("/save-password")).andDo(print()).andExpect(status().isOk()).andExpect(
 				jsonPath("$._links.self").exists());
 	}
 

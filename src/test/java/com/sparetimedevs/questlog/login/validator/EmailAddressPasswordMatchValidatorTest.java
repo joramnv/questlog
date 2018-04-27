@@ -4,12 +4,14 @@ import com.sparetimedevs.questlog.login.Login;
 import com.sparetimedevs.questlog.user.User;
 import com.sparetimedevs.questlog.userpassword.UserPassword;
 import com.sparetimedevs.questlog.userpassword.UserPasswordRepository;
-import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import testsupport.MockitoExtension;
+
+import java.util.Optional;
+import java.util.UUID;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -29,10 +31,12 @@ class EmailAddressPasswordMatchValidatorTest {
 
 	@Test
 	void givenMatchingEmailAddressAndPasswordWhenValidateIsCalledResultsInNoException() throws Exception {
+		UUID userId = UUID.randomUUID();
+		UUID userPasswordId = UUID.randomUUID();
 		String emailAddress = "ab@cd.ef";
 		String password = "ghijkl";
-		User user = new User(emailAddress);
-		UserPassword userPassword = new UserPassword(user, password);
+		User user = new User(userId, emailAddress);
+		UserPassword userPassword = new UserPassword(userPasswordId, user, password);
 		Login login = new Login(emailAddress, password);
 
 		when(userPasswordRepository.findByUserEmailAddress(emailAddress)).thenReturn(Optional.of(userPassword));
@@ -44,11 +48,13 @@ class EmailAddressPasswordMatchValidatorTest {
 
 	@Test
 	void givenMatchingEmailAddressAndPasswordWhenValidateIsCalledThrowsIllegalArgumentException() throws Exception {
+		UUID userId = UUID.randomUUID();
+		UUID userPasswordId = UUID.randomUUID();
 		String emailAddress = "ab@cd.ef";
 		String password = "ghijkl";
 		String notMatchingPassword = "mnopqrs";
-		User user = new User(emailAddress);
-		UserPassword userPassword = new UserPassword(user, password);
+		User user = new User(userId, emailAddress);
+		UserPassword userPassword = new UserPassword(userPasswordId, user, password);
 		Login login = new Login(emailAddress, notMatchingPassword);
 
 		when(userPasswordRepository.findByUserEmailAddress(emailAddress)).thenReturn(Optional.of(userPassword));
