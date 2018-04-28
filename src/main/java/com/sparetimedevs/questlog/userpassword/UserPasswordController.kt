@@ -35,10 +35,10 @@ constructor(
     fun createPassword(@RequestBody loginResource: Resource<Login>?): HttpEntity<Login> {
         val login = loginResource!!.content
 
-	    val user = userRepository.findByEmailAddress(login.emailAddress!!)
+	    val user = userRepository.findByEmailAddress(login.emailAddress)
 			    .orElseThrow { UserNotFoundException("User with e-mail address " + login.emailAddress + " not found.") }
 
-	    val userPassword = UserPassword(UUID.randomUUID(), user, login.password!!)
+	    val userPassword = UserPassword(UUID.randomUUID(), user, login.password)
         try {
             userPasswordRepository.save(userPassword)
         } catch (e: Exception) {
@@ -57,12 +57,12 @@ constructor(
     fun updatePassword(@RequestBody loginResource: Resource<Login>): HttpEntity<Login> { //TODO do not (miss) use Login object.
         val login = loginResource.content
 
-	    val user = userRepository.findByEmailAddress(login.emailAddress!!)
+	    val user = userRepository.findByEmailAddress(login.emailAddress)
 			    .orElseThrow { UserNotFoundException("User with e-mail address " + login.emailAddress + " not found.") }
 
         val oldUserPassword = userPasswordRepository.findByUser(user)
 		        .orElseThrow { RuntimeException("User password for e-mail address " + login.emailAddress + " not found.") } //TODO throw different error.
-        val updatedPassword = UserPassword(oldUserPassword.id, oldUserPassword.user, login.password!!)
+        val updatedPassword = UserPassword(oldUserPassword.id, oldUserPassword.user, login.password)
         userPasswordRepository.save(updatedPassword)
 
         login.add(linkTo(methodOn(UserPasswordController::class.java).createPassword(loginResource)).withSelfRel())

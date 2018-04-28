@@ -7,8 +7,8 @@ import com.fasterxml.jackson.annotation.JsonProperty
 
 data class Login @JsonCreator constructor(
         @param:JsonProperty("emailAddress")
-        val emailAddress: String? = null,
+        val emailAddress: String,
 
         @param:JsonProperty("password")
-        val password: String? = null
+        val password: String
 ) : ResourceSupport()

@@ -54,10 +54,9 @@ class LoginControllerTest {
 
 	@Test
 	void givenCorrectEmailAddressAndPasswordWhenPerformingPostToLoginResultsInLinksToUsersQuestsAndSavePassword() throws Exception {
-		Login login = new Login();
 		doNothing().when(loginValidator).validate(TEST_LOGIN_1);
 
-		when(userService.getUserId(login)).thenReturn(UUID.randomUUID());
+		when(userService.getUserId(TEST_LOGIN_1)).thenReturn(UUID.randomUUID());
 
 		mockMvc.perform(
 				post("/login")
