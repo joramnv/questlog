@@ -11,13 +11,14 @@ import org.springframework.hateoas.Resource
 import org.springframework.hateoas.Resources
 import org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo
 import org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn
-import org.springframework.http.HttpEntity
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType.APPLICATION_JSON_VALUE
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestMethod
+import org.springframework.web.bind.annotation.RequestMethod.GET
+import org.springframework.web.bind.annotation.RequestMethod.POST
+import org.springframework.web.bind.annotation.RequestMethod.PUT
 import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.bind.annotation.RestController
 import java.util.UUID
@@ -31,14 +32,14 @@ constructor(
 		private val userRepository: UserRepository,
 		private val userPasswordRepository: UserPasswordRepository
 ) {
-    @RequestMapping(method = [RequestMethod.POST], consumes = [APPLICATION_JSON_VALUE], produces = [HAL_JSON_VALUE])
-    fun createPassword(@RequestBody loginResource: Resource<Login>?): HttpEntity<Login> {
+    @RequestMapping(method = [POST], consumes = [APPLICATION_JSON_VALUE], produces = [HAL_JSON_VALUE])
+    fun createPassword(@RequestBody loginResource: Resource<Login>?): ResponseEntity<Login> {
         val login = loginResource!!.content
 
 	    val user = userRepository.findByEmailAddress(login.emailAddress)
 			    .orElseThrow { UserNotFoundException("User with e-mail address " + login.emailAddress + " not found.") }
 
-	    val userPassword = UserPassword(UUID.randomUUID(), user, login.password)
+	    val userPassword = UserPassword(UUID.randomUUID(), user.id, login.password)
         try {
             userPasswordRepository.save(userPassword)
         } catch (e: Exception) {
@@ -47,33 +48,31 @@ constructor(
 
         login.add(linkTo(methodOn(UserPasswordController::class.java).createPassword(loginResource)).withSelfRel())
 
-        val link = repositoryEntityLinks.linkToSingleResource(User::class.java, user.emailAddress)
-        login.add(link)
+        val linkToUser = repositoryEntityLinks.linkToSingleResource(User::class.java, user.id)
+        login.add(linkToUser)
 
         return ResponseEntity(login, HttpStatus.OK)
     }
 
-    @RequestMapping(method = [RequestMethod.PUT], consumes = [APPLICATION_JSON_VALUE], produces = [HAL_JSON_VALUE])
-    fun updatePassword(@RequestBody loginResource: Resource<Login>): HttpEntity<Login> { //TODO do not (miss) use Login object.
+    @RequestMapping(method = [PUT], consumes = [APPLICATION_JSON_VALUE], produces = [HAL_JSON_VALUE])
+    fun updatePassword(@RequestBody loginResource: Resource<Login>): ResponseEntity<Login> { //TODO do not (miss) use Login object.
         val login = loginResource.content
 
 	    val user = userRepository.findByEmailAddress(login.emailAddress)
 			    .orElseThrow { UserNotFoundException("User with e-mail address " + login.emailAddress + " not found.") }
 
-        val oldUserPassword = userPasswordRepository.findByUser(user)
+        val oldUserPassword = userPasswordRepository.findByUserId(user.id)
 		        .orElseThrow { RuntimeException("User password for e-mail address " + login.emailAddress + " not found.") } //TODO throw different error.
-        val updatedPassword = UserPassword(oldUserPassword.id, oldUserPassword.user, login.password)
+        val updatedPassword = UserPassword(oldUserPassword.id, oldUserPassword.userId, login.password)
         userPasswordRepository.save(updatedPassword)
 
-        login.add(linkTo(methodOn(UserPasswordController::class.java).createPassword(loginResource)).withSelfRel())
-
-        val link = repositoryEntityLinks.linkToSingleResource(User::class.java, user.emailAddress)
-        login.add(link)
+        val linkToUser = repositoryEntityLinks.linkToSingleResource(User::class.java, user.id)
+        login.add(linkToUser)
 
         return ResponseEntity(login, HttpStatus.OK)
     }
 
-    @RequestMapping(method = [RequestMethod.GET], produces = [HAL_JSON_VALUE])
+    @RequestMapping(method = [GET], produces = [HAL_JSON_VALUE])
     @ResponseBody
     fun savePassword(): ResponseEntity<Resources<*>> {
         val producers = ArrayList<String>()

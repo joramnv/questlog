@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.hateoas.MediaTypes.HAL_JSON_VALUE;
@@ -36,7 +37,7 @@ class LoginControllerIT extends AbstractQuestlogApplicationIT {
 	void setUp() throws Exception {
 		mockMvc = getMockMvc();
 		User user = setUpUser();
-		UserPassword userPassword = setUpUserPassword(user);
+		UserPassword userPassword = setUpUserPassword(user.getId());
 	}
 
 	private User setUpUser() {
@@ -50,12 +51,12 @@ class LoginControllerIT extends AbstractQuestlogApplicationIT {
 		}
 	}
 
-	private UserPassword setUpUserPassword(User user) {
-		Optional<UserPassword> optionalUserPassword = userPasswordRepository.findByUser(user);
+	private UserPassword setUpUserPassword(UUID userId) {
+		Optional<UserPassword> optionalUserPassword = userPasswordRepository.findByUserId(userId);
 		if (optionalUserPassword.isPresent()) {
 			return optionalUserPassword.get();
 		} else {
-			UserPassword userPassword = new UserPassword(USER_PASSWORD_ID_1, user, TEST_PASSWORD_1);
+			UserPassword userPassword = new UserPassword(USER_PASSWORD_ID_1, userId, TEST_PASSWORD_1);
 			userPassword = userPasswordRepository.save(userPassword);
 			return userPassword;
 		}

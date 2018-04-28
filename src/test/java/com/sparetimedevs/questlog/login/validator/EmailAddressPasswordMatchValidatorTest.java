@@ -1,16 +1,15 @@
 package com.sparetimedevs.questlog.login.validator;
 
 import com.sparetimedevs.questlog.login.Login;
-import com.sparetimedevs.questlog.user.User;
+import com.sparetimedevs.questlog.user.UserService;
 import com.sparetimedevs.questlog.userpassword.UserPassword;
-import com.sparetimedevs.questlog.userpassword.UserPasswordRepository;
+import com.sparetimedevs.questlog.userpassword.UserPasswordService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import testsupport.MockitoExtension;
 
-import java.util.Optional;
 import java.util.UUID;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -27,7 +26,10 @@ class EmailAddressPasswordMatchValidatorTest {
 	private LoginValidator loginValidator;
 
 	@Mock
-	private UserPasswordRepository userPasswordRepository;
+	private UserService userService;
+
+	@Mock
+	private UserPasswordService userPasswordService;
 
 	@Test
 	void givenMatchingEmailAddressAndPasswordWhenValidateIsCalledResultsInNoException() throws Exception {
@@ -35,29 +37,30 @@ class EmailAddressPasswordMatchValidatorTest {
 		UUID userPasswordId = UUID.randomUUID();
 		String emailAddress = "ab@cd.ef";
 		String password = "ghijkl";
-		User user = new User(userId, emailAddress);
-		UserPassword userPassword = new UserPassword(userPasswordId, user, password);
+		UserPassword userPassword = new UserPassword(userPasswordId, userId, password);
 		Login login = new Login(emailAddress, password);
 
-		when(userPasswordRepository.findByUserEmailAddress(emailAddress)).thenReturn(Optional.of(userPassword));
+		when(userService.getUserId(login)).thenReturn(userId);
+		when(userPasswordService.getUserPassword(userId)).thenReturn(userPassword);
 
-		loginValidator.validate(login);
+		UUID returnedUserId = loginValidator.validate(login);
 
 		assertThat(userPassword.getPassword(), is(equalTo(password)));
+		assertThat(returnedUserId, is(equalTo(userId)));
 	}
 
 	@Test
-	void givenMatchingEmailAddressAndPasswordWhenValidateIsCalledThrowsIllegalArgumentException() throws Exception {
+	void givenMatchingEmailAddressAndPasswordWhenValidateIsCalledThrowsEmailAddressPasswordDoNotMatchException() throws Exception {
 		UUID userId = UUID.randomUUID();
 		UUID userPasswordId = UUID.randomUUID();
 		String emailAddress = "ab@cd.ef";
 		String password = "ghijkl";
 		String notMatchingPassword = "mnopqrs";
-		User user = new User(userId, emailAddress);
-		UserPassword userPassword = new UserPassword(userPasswordId, user, password);
+		UserPassword userPassword = new UserPassword(userPasswordId, userId, password);
 		Login login = new Login(emailAddress, notMatchingPassword);
 
-		when(userPasswordRepository.findByUserEmailAddress(emailAddress)).thenReturn(Optional.of(userPassword));
+		when(userService.getUserId(login)).thenReturn(userId);
+		when(userPasswordService.getUserPassword(userId)).thenReturn(userPassword);
 
 		assertThrows(EmailAddressPasswordDoNotMatchException.class, () -> {
 			loginValidator.validate(login);

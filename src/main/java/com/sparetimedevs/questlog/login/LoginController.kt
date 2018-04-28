@@ -27,20 +27,16 @@ import java.util.ArrayList
 class LoginController
 @Autowired
 constructor(
-		private val loginValidator: LoginValidator,
-		private val userService: UserService
+		private val loginValidator: LoginValidator
 ) {
 	@RequestMapping(method = [POST], consumes = [APPLICATION_JSON_VALUE], produces = [HAL_JSON_VALUE])
-	fun login(@RequestBody loginResource: Resource<Login>?): HttpEntity<Login> {
+	fun login(@RequestBody loginResource: Resource<Login>?): ResponseEntity<Login> {
 		val login = loginResource!!.content
 
-		loginValidator.validate(login)
+		val userId = 	loginValidator.validate(login)
 
 		val linkToSelf = linkTo(methodOn(LoginController::class.java).login(loginResource)).withSelfRel()
-
-		val userId = userService.getUserId(login)
 		val linkToUserQuests = linkTo(methodOn(QuestController::class.java).findUserQuests(userId)).withRel("user-quests")
-
 		val linkToUserPassword = linkTo(UserPasswordController::class.java).withRel("save-password")
 
 		login.add(linkToSelf)

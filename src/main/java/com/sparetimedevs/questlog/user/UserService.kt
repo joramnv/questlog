@@ -12,7 +12,7 @@ constructor(
 		private val userRepository: UserRepository
 ) {
 	fun getUserId(login: Login): UUID {
-		val user = userRepository.findByEmailAddress(login.emailAddress!!)
+		val user = userRepository.findByEmailAddress(login.emailAddress)
 				.orElseThrow { RuntimeException("User with e-mail address " + login.emailAddress + " not found.") } //TODO throw different error.
 		return user.id
 	}

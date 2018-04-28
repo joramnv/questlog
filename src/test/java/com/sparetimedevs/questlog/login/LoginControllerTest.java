@@ -2,7 +2,6 @@ package com.sparetimedevs.questlog.login;
 
 import com.sparetimedevs.questlog.login.validator.EmailAddressPasswordDoNotMatchException;
 import com.sparetimedevs.questlog.login.validator.LoginValidator;
-import com.sparetimedevs.questlog.user.UserService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +15,6 @@ import testsupport.MockitoExtension;
 import java.util.UUID;
 
 import static org.hamcrest.Matchers.containsString;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.hateoas.MediaTypes.HAL_JSON_VALUE;
@@ -43,9 +41,6 @@ class LoginControllerTest {
 	@MockBean
 	private LoginValidator loginValidator;
 
-	@MockBean
-	private UserService userService;
-
 	@Test
 	void shouldReturnRepositoryIndex() throws Exception {
 		mockMvc.perform(get("/login")).andDo(print()).andExpect(status().isOk()).andExpect(
@@ -54,9 +49,7 @@ class LoginControllerTest {
 
 	@Test
 	void givenCorrectEmailAddressAndPasswordWhenPerformingPostToLoginResultsInLinksToUsersQuestsAndSavePassword() throws Exception {
-		doNothing().when(loginValidator).validate(TEST_LOGIN_1);
-
-		when(userService.getUserId(TEST_LOGIN_1)).thenReturn(UUID.randomUUID());
+		when(loginValidator.validate(TEST_LOGIN_1)).thenReturn(UUID.randomUUID());
 
 		mockMvc.perform(
 				post("/login")

@@ -1,14 +1,13 @@
 package com.sparetimedevs.questlog.userpassword
 
-import com.sparetimedevs.questlog.user.User
 import org.springframework.data.repository.CrudRepository
 import org.springframework.data.repository.query.Param
+import org.springframework.data.rest.core.annotation.RepositoryRestResource
 import java.util.Optional
+import java.util.UUID
 
-interface UserPasswordRepository : CrudRepository<UserPassword, Long> {
+@RepositoryRestResource(exported = false)
+interface UserPasswordRepository : CrudRepository<UserPassword, UUID> {
 
-	fun findByUser(@Param("USER") user: User): Optional<UserPassword>
-
-	fun findByUserEmailAddress(@Param("USER_EMAIL_ADDRESS") userEmailAddress: String): Optional<UserPassword>
-
+	fun findByUserId(@Param("USER_ID") userId: UUID): Optional<UserPassword>
 }
