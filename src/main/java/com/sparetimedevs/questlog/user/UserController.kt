@@ -16,9 +16,7 @@
 //
 //@RestController
 //@RequestMapping(path = ["user"])
-//class UserController
-//@Autowired
-//constructor(
+//class UserController(
 //		private val entityLinks: RepositoryEntityLinks,
 //		private val userRepository: UserRepository
 //) {

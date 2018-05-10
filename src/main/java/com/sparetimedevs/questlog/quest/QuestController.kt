@@ -1,7 +1,6 @@
 package com.sparetimedevs.questlog.quest
 
 import com.sparetimedevs.questlog.user.User
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.rest.webmvc.support.RepositoryEntityLinks
 import org.springframework.hateoas.MediaTypes
 import org.springframework.hateoas.Resources
@@ -15,9 +14,7 @@ import org.springframework.web.bind.annotation.RestController
 import java.util.UUID
 
 @RestController
-class QuestController
-@Autowired
-constructor(
+class QuestController(
 		private val repositoryEntityLinks: RepositoryEntityLinks,
 		private val questRepository: QuestRepository
 ) {

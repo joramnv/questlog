@@ -4,7 +4,6 @@ import com.sparetimedevs.questlog.login.Login
 import com.sparetimedevs.questlog.user.User
 import com.sparetimedevs.questlog.user.UserNotFoundException
 import com.sparetimedevs.questlog.user.UserRepository
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.rest.webmvc.support.RepositoryEntityLinks
 import org.springframework.hateoas.MediaTypes.HAL_JSON_VALUE
 import org.springframework.hateoas.Resource
@@ -25,9 +24,7 @@ import java.util.UUID
 
 @RestController
 @RequestMapping(path = ["save-password"])
-class UserPasswordController
-@Autowired
-constructor(
+class UserPasswordController(
 		private val repositoryEntityLinks: RepositoryEntityLinks,
 		private val userRepository: UserRepository,
 		private val userPasswordRepository: UserPasswordRepository

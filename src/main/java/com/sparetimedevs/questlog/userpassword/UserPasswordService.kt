@@ -5,9 +5,7 @@ import org.springframework.stereotype.Component
 import java.util.UUID
 
 @Component
-class UserPasswordService
-@Autowired
-constructor(
+class UserPasswordService(
 		private val userPasswordRepository: UserPasswordRepository
 ) {
 	fun getUserPassword(userId: UUID): UserPassword {

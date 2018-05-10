@@ -3,14 +3,11 @@ package com.sparetimedevs.questlog.login.validator
 import com.sparetimedevs.questlog.login.Login
 import com.sparetimedevs.questlog.user.UserService
 import com.sparetimedevs.questlog.userpassword.UserPasswordService
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import java.util.UUID
 
 @Component
-class LoginValidator
-@Autowired
-constructor(
+class LoginValidator(
 		private val userService: UserService,
 		private val userPasswordService: UserPasswordService
 ) {

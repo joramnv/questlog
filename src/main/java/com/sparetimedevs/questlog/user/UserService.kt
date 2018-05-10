@@ -1,14 +1,11 @@
 package com.sparetimedevs.questlog.user
 
 import com.sparetimedevs.questlog.login.Login
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import java.util.UUID
 
 @Component
-class UserService
-@Autowired
-constructor(
+class UserService(
 		private val userRepository: UserRepository
 ) {
 	fun getUserId(login: Login): UUID {
