@@ -34,6 +34,7 @@ class LoginControllerTest {
 	private static final String TEST_EMAIL_ADDRESS_1 = "test@e-mail.address";
 	private static final String TEST_PASSWORD_1 = "test_password";
 	private static final Login TEST_LOGIN_1 = new Login(TEST_EMAIL_ADDRESS_1, TEST_EMAIL_ADDRESS_1);
+	private static final UUID TEST_USER_ID = new UUID(54321L, 12345L);
 
 	@Autowired
 	private MockMvc mockMvc;
@@ -49,7 +50,7 @@ class LoginControllerTest {
 
 	@Test
 	void givenCorrectEmailAddressAndPasswordWhenPerformingPostToLoginResultsInLinksToUsersQuestsAndSavePassword() throws Exception {
-		when(loginValidator.validate(TEST_LOGIN_1)).thenReturn(UUID.randomUUID());
+		when(loginValidator.validate(TEST_LOGIN_1)).thenReturn(TEST_USER_ID);
 
 		mockMvc.perform(
 				post("/login")

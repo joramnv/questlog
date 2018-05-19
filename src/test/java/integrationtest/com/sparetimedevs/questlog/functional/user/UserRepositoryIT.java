@@ -13,7 +13,9 @@ import org.springframework.web.util.NestedServletException;
 
 import java.util.Optional;
 
-import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -21,7 +23,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -39,39 +40,46 @@ class UserRepositoryIT extends AbstractQuestlogApplicationIT {
 
 	@AfterEach
 	void tearDown() throws Exception {
-		Optional<User> optionalUser = userRepository.findByEmailAddress(TEST_EMAIL_ADDRESS_1);
-		optionalUser.ifPresent(user -> userRepository.delete(user));
+		Optional<User> optionalUser1 = userRepository.findByEmailAddress(TEST_EMAIL_ADDRESS_1);
+		optionalUser1.ifPresent(user -> userRepository.delete(user));
+
+		Optional<User> optionalUser2 = userRepository.findByEmailAddress(TEST_EMAIL_ADDRESS_2);
+		optionalUser2.ifPresent(user -> userRepository.delete(user));
 	}
 
 	@Test
 	void shouldReturnRepositoryIndex() throws Exception {
-		mockMvc.perform(get("/user")).andDo(print()).andExpect(status().isOk()).andExpect(
+		mockMvc.perform(get("/users")).andDo(print()).andExpect(status().isOk()).andExpect(
 				jsonPath("$._links.self").exists());
 	}
 
 	@Test
 	void shouldCreateEntity() throws Exception {
-		mockMvc.perform(post("/user").content(
-				"{\"emailAddress\": \"" + TEST_EMAIL_ADDRESS_1 + "\"}")).andExpect(
-				status().isCreated()).andExpect(
-				header().string("Location", containsString("user/" + TEST_EMAIL_ADDRESS_1)));
-	}
-
-	@Test
-	void shouldRetrieveEntity() throws Exception {
-		MvcResult mvcResult = mockMvc.perform(post("/user").content(
+		MvcResult mvcResult = mockMvc.perform(post("/users").content(
 				"{\"emailAddress\": \"" + TEST_EMAIL_ADDRESS_1 + "\"}")).andExpect(
 				status().isCreated()).andReturn();
 
 		String location = mvcResult.getResponse().getHeader("Location");
+		String userId = getUserIdFromLocation(location);
+		assertThat(userId, is(notNullValue()));
+	}
+
+	@Test
+	void shouldRetrieveEntity() throws Exception {
+		MvcResult mvcResult = mockMvc.perform(post("/users").content(
+				"{\"emailAddress\": \"" + TEST_EMAIL_ADDRESS_1 + "\"}")).andExpect(
+				status().isCreated()).andReturn();
+
+		String location = mvcResult.getResponse().getHeader("Location");
+		String userId = getUserIdFromLocation(location);
 		mockMvc.perform(get(location)).andExpect(status().isOk()).andExpect(
 				content().json("{\n" +
 						"  \"_links\" : {\n" +
 						"    \"self\" : {\n" +
-						"      \"href\" : \"http://localhost/user/"+TEST_EMAIL_ADDRESS_1 + "\"\n" +
+						"      \"href\" : \"" + TEST_BASE_URL + "/users/" + userId + "\"\n" +
 						"    },\n" +
 						"    \"user\" : {\n" +
-						"      \"href\" : \"http://localhost/user/"+TEST_EMAIL_ADDRESS_1 + "\"\n" +
+						"      \"href\" : \"" + TEST_BASE_URL + "/users/" + userId + "\"\n" +
 						"    }\n" +
 						"  }\n" +
 						"}"));
@@ -79,7 +87,7 @@ class UserRepositoryIT extends AbstractQuestlogApplicationIT {
 
 	@Test
 	void shouldNotUpdateEntity() throws Exception {
-		MvcResult mvcResult = mockMvc.perform(post("/user").content(
+		MvcResult mvcResult = mockMvc.perform(post("/users").content(
 				"{\"emailAddress\": \"" + TEST_EMAIL_ADDRESS_1 + "\"}")).andExpect(
 				status().isCreated()).andReturn();
 
@@ -89,18 +97,20 @@ class UserRepositoryIT extends AbstractQuestlogApplicationIT {
 			mockMvc.perform(put(location).content(
 					"{\"emailAddress\": \"" + TEST_EMAIL_ADDRESS_2 + "\"}")).andExpect(
 					status().isNoContent());
-		} catch (NestedServletException e) {
-			//This exception is expected
+		} catch (Exception e) {
+			//TODO instead of expecting an exception, this should return an api error message stating that the emailaddress can not be changed... (why not actually? Seems like a valid action)
 		}
+
+		String userId = getUserIdFromLocation(location);
 
 		mockMvc.perform(get(location)).andExpect(status().isOk()).andExpect(
 				content().json("{\n" +
 						"  \"_links\" : {\n" +
 						"    \"self\" : {\n" +
-						"      \"href\" : \"http://localhost/user/"+TEST_EMAIL_ADDRESS_1 + "\"\n" +
+						"      \"href\" : \"" + TEST_BASE_URL + "/users/" + userId + "\"\n" +
 						"    },\n" +
 						"    \"user\" : {\n" +
-						"      \"href\" : \"http://localhost/user/"+TEST_EMAIL_ADDRESS_1 + "\"\n" +
+						"      \"href\" : \"" + TEST_BASE_URL + "/users/" + userId + "\"\n" +
 						"    }\n" +
 						"  }\n" +
 						"}"));
@@ -108,7 +118,7 @@ class UserRepositoryIT extends AbstractQuestlogApplicationIT {
 
 	@Test
 	void shouldNotPartiallyUpdateEntity() throws Exception {
-		MvcResult mvcResult = mockMvc.perform(post("/user").content(
+		MvcResult mvcResult = mockMvc.perform(post("/users").content(
 				"{\"emailAddress\": \"" + TEST_EMAIL_ADDRESS_1 + "\"}")).andExpect(
 				status().isCreated()).andReturn();
 
@@ -119,25 +129,28 @@ class UserRepositoryIT extends AbstractQuestlogApplicationIT {
 					"{\"emailAddress\": \"" + TEST_EMAIL_ADDRESS_2 + "\"}")).andExpect(
 					status().isNoContent());
 		} catch (NestedServletException e) {
-			//This exception is expected
+			//TODO instead of expecting an exception, this should return an api error message stating that the emailaddress can not be changed... (why not actually? Seems like a valid action)
 		}
+
+		String userId = getUserIdFromLocation(location);
 
 		mockMvc.perform(get(location)).andExpect(status().isOk()).andExpect(
 				content().json("{\n" +
 						"  \"_links\" : {\n" +
 						"    \"self\" : {\n" +
-						"      \"href\" : \"http://localhost/user/"+TEST_EMAIL_ADDRESS_1 + "\"\n" +
+						"      \"href\" : \"" + TEST_BASE_URL + "/users/" + userId + "\"\n" +
 						"    },\n" +
 						"    \"user\" : {\n" +
-						"      \"href\" : \"http://localhost/user/"+TEST_EMAIL_ADDRESS_1 + "\"\n" +
+						"      \"href\" : \"" + TEST_BASE_URL + "/users/" + userId + "\"\n" +
 						"    }\n" +
 						"  }\n" +
 						"}"));
+		//TODO this does not assert the same e-mail address (is it still the same, don't think so?)
 	}
 
 	@Test
 	void shouldDeleteEntity() throws Exception {
-		MvcResult mvcResult = mockMvc.perform(post("/user").content(
+		MvcResult mvcResult = mockMvc.perform(post("/users").content(
 				"{\"emailAddress\": \"" + TEST_EMAIL_ADDRESS_1 + "\"}")).andExpect(
 				status().isCreated()).andReturn();
 
@@ -149,9 +162,13 @@ class UserRepositoryIT extends AbstractQuestlogApplicationIT {
 
 	@Test
 	void shouldReturnStatusIsNotFoundWhenTryingToGetAnEntityThatIsNotPresentInTheDatabase() throws Exception {
-		String uri = "http://localhost/user/" + TEST_EMAIL_ADDRESS_1;
-//		String uri = "http://localhost/" + TEST_EMAIL_ADDRESS_1;
+		String url = "http://localhost/users/" + TEST_USER_ID_1;
 
-		mockMvc.perform(get(uri)).andExpect(status().isNotFound());
+		mockMvc.perform(get(url)).andExpect(status().isNotFound());
+	}
+
+	private String getUserIdFromLocation(String location) {
+		String[] locationUrlInParts = location.split("/");
+		return locationUrlInParts[locationUrlInParts.length - 1];
 	}
 }

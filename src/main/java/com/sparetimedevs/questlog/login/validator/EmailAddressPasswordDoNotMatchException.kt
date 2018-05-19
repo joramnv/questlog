@@ -1,3 +1,3 @@
 package com.sparetimedevs.questlog.login.validator
 
-class EmailAddressPasswordDoNotMatchException(override var message:String): RuntimeException(message)
+class EmailAddressPasswordDoNotMatchException(override val message: String): RuntimeException(message)

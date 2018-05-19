@@ -45,7 +45,7 @@ class LoginControllerIT extends AbstractQuestlogApplicationIT {
 		if (optionalUser.isPresent()) {
 			return optionalUser.get();
 		} else {
-			User user = new User(USER_ID_1, TEST_EMAIL_ADDRESS_1);
+			User user = new User(TEST_USER_ID_1, TEST_EMAIL_ADDRESS_1);
 			user = userRepository.save(user);
 			return user;
 		}
@@ -56,7 +56,7 @@ class LoginControllerIT extends AbstractQuestlogApplicationIT {
 		if (optionalUserPassword.isPresent()) {
 			return optionalUserPassword.get();
 		} else {
-			UserPassword userPassword = new UserPassword(USER_PASSWORD_ID_1, userId, TEST_PASSWORD_1);
+			UserPassword userPassword = new UserPassword(TEST_USER_PASSWORD_ID_1, userId, TEST_PASSWORD_1);
 			userPassword = userPasswordRepository.save(userPassword);
 			return userPassword;
 		}

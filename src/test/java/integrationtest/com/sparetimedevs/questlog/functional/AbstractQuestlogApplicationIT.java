@@ -15,14 +15,15 @@ import java.util.UUID;
 @AutoConfigureMockMvc
 public abstract class AbstractQuestlogApplicationIT {
 
+	protected static final String TEST_BASE_URL = "http://localhost";
+
 	protected static final String TEST_EMAIL_ADDRESS_1 = "test@e-mail.address";
 	protected static final String TEST_EMAIL_ADDRESS_2 = "second@test.mail";
 	protected static final String TEST_PASSWORD_1 = "test_password";
 
-	protected static final UUID USER_ID_1 = UUID.randomUUID(); //TODO actually do not use random uuid but fixed.
-	protected static final UUID QUEST_ID_1 = UUID.randomUUID();
-	protected static final UUID USER_PASSWORD_ID_1 = UUID.randomUUID();
-
+	protected static final UUID TEST_USER_ID_1 = new UUID(54321L, 12345L);
+	protected static final UUID TEST_QUEST_ID_1 = new UUID(65432L, 23456L);
+	protected static final UUID TEST_USER_PASSWORD_ID_1 = new UUID(76543L, 34567L);
 
 	@Autowired
 	private MockMvc mockMvc;
