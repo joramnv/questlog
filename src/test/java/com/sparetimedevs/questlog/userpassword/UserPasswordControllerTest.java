@@ -1,6 +1,6 @@
 package com.sparetimedevs.questlog.userpassword;
 
-import com.sparetimedevs.questlog.user.UserRepository;
+import com.sparetimedevs.questlog.user.UserService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,7 +31,7 @@ class UserPasswordControllerTest {
 	private RepositoryEntityLinks entityLinks;
 
 	@MockBean
-	private UserRepository userRepository;
+	private UserService userService;
 
 	@MockBean
 	private UserPasswordRepository userPasswordRepository;

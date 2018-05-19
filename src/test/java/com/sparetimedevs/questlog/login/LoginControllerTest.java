@@ -1,6 +1,6 @@
 package com.sparetimedevs.questlog.login;
 
-import com.sparetimedevs.questlog.login.validator.EmailAddressPasswordDoNotMatchException;
+import com.sparetimedevs.questlog.login.exception.EmailAddressPasswordDoNotMatchException;
 import com.sparetimedevs.questlog.login.validator.LoginValidator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

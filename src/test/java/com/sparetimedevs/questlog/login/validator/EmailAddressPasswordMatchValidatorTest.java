@@ -1,6 +1,7 @@
 package com.sparetimedevs.questlog.login.validator;
 
 import com.sparetimedevs.questlog.login.Login;
+import com.sparetimedevs.questlog.login.exception.EmailAddressPasswordDoNotMatchException;
 import com.sparetimedevs.questlog.user.UserService;
 import com.sparetimedevs.questlog.userpassword.UserPassword;
 import com.sparetimedevs.questlog.userpassword.UserPasswordService;

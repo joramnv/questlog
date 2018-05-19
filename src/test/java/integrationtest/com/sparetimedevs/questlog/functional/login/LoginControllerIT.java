@@ -90,10 +90,10 @@ class LoginControllerIT extends AbstractQuestlogApplicationIT {
 				post("/login")
 						.header("Accept", HAL_JSON_VALUE)
 						.header("Content-Type", APPLICATION_JSON_VALUE)
-						.content("{\"emailAddress\": \"" + TEST_EMAIL_ADDRESS_1 + "\","
+						.content("{\"emailAddress\": \"" + TEST_EMAIL_ADDRESS_2 + "\","
 								+ "\"password\": \"" + TEST_PASSWORD_1 + "\"}")
 		)
-				.andExpect(status().isBadRequest())
+				.andExpect(status().isNotFound())
 				.andExpect(header().string("Location", containsString("login/")));
 	}
 

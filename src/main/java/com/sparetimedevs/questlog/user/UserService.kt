@@ -1,6 +1,7 @@
 package com.sparetimedevs.questlog.user
 
 import com.sparetimedevs.questlog.login.Login
+import com.sparetimedevs.questlog.user.exception.UserNotFoundException
 import org.springframework.stereotype.Component
 import java.util.UUID
 
@@ -10,7 +11,7 @@ class UserService(
 ) {
 	fun getUserId(login: Login): UUID {
 		val user = userRepository.findByEmailAddress(login.emailAddress)
-				.orElseThrow { RuntimeException("User with e-mail address " + login.emailAddress + " not found.") } //TODO throw different error.
+				.orElseThrow { UserNotFoundException("User with e-mail address " + login.emailAddress + " not found.") }
 		return user.id
 	}
 }
