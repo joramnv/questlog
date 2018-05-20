@@ -12,8 +12,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 class LoginResponseEntityExceptionHandler : ResponseEntityExceptionHandler() {
 
     @ExceptionHandler(value = [EmailAddressPasswordDoNotMatchException::class, IllegalArgumentException::class, IllegalStateException::class])
-    protected fun handleConflict(ex: RuntimeException, request: WebRequest): ResponseEntity<Any> {
-        val bodyOfResponse = "This should be application specific"
-        return handleExceptionInternal(ex, bodyOfResponse, HttpHeaders(), HttpStatus.CONFLICT, request)
+    fun handleConflict(ex: RuntimeException, request: WebRequest): ResponseEntity<Any> {
+        return handleExceptionInternal(ex, ex.message, HttpHeaders(), HttpStatus.CONFLICT, request) //TODO change this status
     }
 }

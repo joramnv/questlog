@@ -13,15 +13,20 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.hamcrest.Matchers.containsString;
 import static org.springframework.hateoas.MediaTypes.HAL_JSON_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static testsetup.TestDataKt.EMAIL_ADDRESS_1;
+import static testsetup.TestDataKt.EMAIL_ADDRESS_2;
+import static testsetup.TestDataKt.PASSWORD_1;
+import static testsetup.TestDataKt.PASSWORD_2;
+import static testsetup.TestDataKt.getUserId1;
+import static testsetup.TestDataKt.getUserPasswordId1;
+
 
 class LoginControllerIT extends AbstractQuestlogApplicationIT {
 
@@ -37,28 +42,25 @@ class LoginControllerIT extends AbstractQuestlogApplicationIT {
 	void setUp() throws Exception {
 		mockMvc = getMockMvc();
 		User user = setUpUser();
-		UserPassword userPassword = setUpUserPassword(user.getId());
+		setUpUserPassword(user.getId());
 	}
 
 	private User setUpUser() {
-		Optional<User> optionalUser = userRepository.findByEmailAddress(TEST_EMAIL_ADDRESS_1);
+		Optional<User> optionalUser = userRepository.findByEmailAddress(EMAIL_ADDRESS_1);
 		if (optionalUser.isPresent()) {
 			return optionalUser.get();
 		} else {
-			User user = new User(TEST_USER_ID_1, TEST_EMAIL_ADDRESS_1);
+			User user = new User(getUserId1(), EMAIL_ADDRESS_1);
 			user = userRepository.save(user);
 			return user;
 		}
 	}
 
-	private UserPassword setUpUserPassword(UUID userId) {
+	private void setUpUserPassword(UUID userId) {
 		Optional<UserPassword> optionalUserPassword = userPasswordRepository.findByUserId(userId);
-		if (optionalUserPassword.isPresent()) {
-			return optionalUserPassword.get();
-		} else {
-			UserPassword userPassword = new UserPassword(TEST_USER_PASSWORD_ID_1, userId, TEST_PASSWORD_1);
-			userPassword = userPasswordRepository.save(userPassword);
-			return userPassword;
+		if (!optionalUserPassword.isPresent()) {
+			UserPassword userPassword = new UserPassword(getUserPasswordId1(), userId, PASSWORD_1);
+			userPasswordRepository.save(userPassword);
 		}
 	}
 
@@ -69,13 +71,13 @@ class LoginControllerIT extends AbstractQuestlogApplicationIT {
 	}
 
 	@Test
-	void givenCorrectEmailAddressAndPasswordWhenPerformingPostToLoginResultsInLinksToUsersQuestsAndSavePassword() throws Exception {
+	void givenCorrectEmailAddressAndCorrectPasswordWhenPerformingPostToLoginResultsInLinksToUsersQuestsAndSavePassword() throws Exception {
 		mockMvc.perform(
 				post("/login")
 					.header("Accept", HAL_JSON_VALUE)
 					.header("Content-Type", APPLICATION_JSON_VALUE)
-					.content("{\"emailAddress\": \"" + TEST_EMAIL_ADDRESS_1 + "\","
-							+ "\"password\": \"" + TEST_PASSWORD_1 + "\"}")
+					.content("{\"emailAddress\": \"" + EMAIL_ADDRESS_1 + "\","
+							+ "\"password\": \"" + PASSWORD_1 + "\"}")
 				)
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$._links.self").exists())
@@ -83,18 +85,40 @@ class LoginControllerIT extends AbstractQuestlogApplicationIT {
 				.andExpect(jsonPath("$._links.save-password").exists());
 	}
 
-	//TODO fix error handeling, then fix this test
 	@Test
-	void givenWrongEmailAddressAndPasswordWhenPerformingPostToLoginResultsInGracefulErrorMessage() throws Exception {
+	void givenWrongEmailAddressAndCorrectPasswordWhenPerformingPostToLoginResultsInStatusIsNotFound() throws Exception {
 		mockMvc.perform(
 				post("/login")
 						.header("Accept", HAL_JSON_VALUE)
 						.header("Content-Type", APPLICATION_JSON_VALUE)
-						.content("{\"emailAddress\": \"" + TEST_EMAIL_ADDRESS_2 + "\","
-								+ "\"password\": \"" + TEST_PASSWORD_1 + "\"}")
+						.content("{\"emailAddress\": \"" + EMAIL_ADDRESS_2 + "\","
+								+ "\"password\": \"" + PASSWORD_1 + "\"}")
 		)
-				.andExpect(status().isNotFound())
-				.andExpect(header().string("Location", containsString("login/")));
+				.andExpect(status().isNotFound());
+	}
+
+	@Test
+	void givenWrongEmailAddressAndWrongPasswordWhenPerformingPostToLoginResultsInStatusIsNotFound() throws Exception {
+		mockMvc.perform(
+				post("/login")
+						.header("Accept", HAL_JSON_VALUE)
+						.header("Content-Type", APPLICATION_JSON_VALUE)
+						.content("{\"emailAddress\": \"" + EMAIL_ADDRESS_2 + "\","
+								+ "\"password\": \"" + PASSWORD_2 + "\"}")
+		)
+				.andExpect(status().isNotFound());
+	}
+
+	@Test
+	void givenCorrectEmailAddressAndWrongPasswordWhenPerformingPostToLoginResultsInStatusIsConflict() throws Exception { //TODO change this status
+		mockMvc.perform(
+				post("/login")
+						.header("Accept", HAL_JSON_VALUE)
+						.header("Content-Type", APPLICATION_JSON_VALUE)
+						.content("{\"emailAddress\": \"" + EMAIL_ADDRESS_1 + "\","
+								+ "\"password\": \"" + PASSWORD_2 + "\"}")
+		)
+				.andExpect(status().isConflict());
 	}
 
 	@Test

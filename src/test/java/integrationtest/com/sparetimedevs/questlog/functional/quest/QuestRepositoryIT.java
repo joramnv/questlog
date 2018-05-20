@@ -15,6 +15,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static testsetup.TestDataKt.EMAIL_ADDRESS_1;
+import static testsetup.TestDataKt.getQuestId1;
+import static testsetup.TestDataKt.getUserId1;
 
 class QuestRepositoryIT extends AbstractQuestlogApplicationIT {
 
@@ -34,12 +37,12 @@ class QuestRepositoryIT extends AbstractQuestlogApplicationIT {
 	}
 
 	private User setUpUser() {
-		User user = new User(TEST_USER_ID_1, TEST_EMAIL_ADDRESS_1);
+		User user = new User(getUserId1(), EMAIL_ADDRESS_1);
 		return userRepository.save(user);
 	}
 
 	private Quest setUpQuest(User user) {
-		return new Quest(TEST_QUEST_ID_1, TEST_USER_ID_1, "Always Be Cool", "This started with ABC and the rest is history.", 22L);
+		return new Quest(getQuestId1(), getUserId1(), "Always Be Cool", "This started with ABC and the rest is history.", 22L);
 	}
 
 	@AfterEach

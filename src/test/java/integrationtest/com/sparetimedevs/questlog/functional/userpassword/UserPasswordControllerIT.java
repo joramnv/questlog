@@ -15,6 +15,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static testsetup.TestDataKt.EMAIL_ADDRESS_1;
 
 class UserPasswordControllerIT extends AbstractQuestlogApplicationIT {
 
@@ -30,7 +31,7 @@ class UserPasswordControllerIT extends AbstractQuestlogApplicationIT {
 
 	@AfterEach
 	void tearDown() throws Exception {
-		Optional<User> optionalUser = userRepository.findByEmailAddress(TEST_EMAIL_ADDRESS_1);
+		Optional<User> optionalUser = userRepository.findByEmailAddress(EMAIL_ADDRESS_1);
 		optionalUser.ifPresent(user -> userRepository.delete(user));
 	}
 
