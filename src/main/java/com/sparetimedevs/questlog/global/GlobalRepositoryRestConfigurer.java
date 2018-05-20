@@ -1,4 +1,4 @@
-package com.sparetimedevs.questlog;
+package com.sparetimedevs.questlog.global;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.rest.core.config.RepositoryRestConfiguration;

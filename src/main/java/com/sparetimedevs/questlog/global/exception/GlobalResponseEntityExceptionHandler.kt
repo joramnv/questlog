@@ -1,4 +1,4 @@
-package com.sparetimedevs.questlog.login.exception
+package com.sparetimedevs.questlog.global.exception
 
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
@@ -9,10 +9,10 @@ import org.springframework.web.context.request.WebRequest
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
 
 @ControllerAdvice
-class LoginResponseEntityExceptionHandler : ResponseEntityExceptionHandler() {
+class GlobalResponseEntityExceptionHandler : ResponseEntityExceptionHandler() {
 
-    @ExceptionHandler(value = [EmailAddressPasswordDoNotMatchException::class, IllegalArgumentException::class, IllegalStateException::class])
+    @ExceptionHandler(value = [IllegalArgumentException::class, IllegalStateException::class])
     fun handleConflict(ex: RuntimeException, request: WebRequest): ResponseEntity<Any> {
-        return handleExceptionInternal(ex, ex.message, HttpHeaders(), HttpStatus.UNAUTHORIZED, request)
+        return handleExceptionInternal(ex, ex.message, HttpHeaders(), HttpStatus.CONFLICT, request) //TODO change this status
     }
 }

@@ -118,7 +118,7 @@ class LoginControllerIT extends AbstractQuestlogApplicationIT {
 						.content("{\"emailAddress\": \"" + EMAIL_ADDRESS_1 + "\","
 								+ "\"password\": \"" + PASSWORD_2 + "\"}")
 		)
-				.andExpect(status().isConflict());
+				.andExpect(status().isUnauthorized());
 	}
 
 	@Test
