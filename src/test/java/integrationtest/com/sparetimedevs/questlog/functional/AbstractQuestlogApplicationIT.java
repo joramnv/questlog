@@ -13,7 +13,7 @@ import org.springframework.test.web.servlet.MockMvc;
 @AutoConfigureMockMvc
 public abstract class AbstractQuestlogApplicationIT {
 
-	protected static final String TEST_BASE_URL = "http://localhost"; //TODO make this a property
+	protected static final String TEST_BASE_URL = "http://localhost";
 
 	@Autowired
 	private MockMvc mockMvc;

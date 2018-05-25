@@ -110,7 +110,7 @@ class LoginControllerIT extends AbstractQuestlogApplicationIT {
 	}
 
 	@Test
-	void givenCorrectEmailAddressAndWrongPasswordWhenPerformingPostToLoginResultsInStatusIsConflict() throws Exception { //TODO change this status
+	void givenCorrectEmailAddressAndWrongPasswordWhenPerformingPostToLoginResultsInStatusIsConflict() throws Exception {
 		mockMvc.perform(
 				post("/login")
 						.header("Accept", HAL_JSON_VALUE)

@@ -12,7 +12,9 @@ import org.springframework.test.web.servlet.MvcResult;
 
 import java.util.Optional;
 
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -24,9 +26,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static testsetup.TestDataKt.*;
 import static testsetup.TestDataKt.EMAIL_ADDRESS_1;
 import static testsetup.TestDataKt.EMAIL_ADDRESS_2;
+import static testsetup.TestDataKt.getUserId1;
 
 class UserRepositoryIT extends AbstractQuestlogApplicationIT {
 
@@ -88,24 +90,20 @@ class UserRepositoryIT extends AbstractQuestlogApplicationIT {
 	}
 
 	@Test
-	void shouldNotUpdateEntity() throws Exception {
+	void shouldUpdateEmailAddressOfTheUserWithPut() throws Exception {
 		MvcResult mvcResult = mockMvc.perform(post("/users").content(
 				"{\"emailAddress\": \"" + EMAIL_ADDRESS_1 + "\"}")).andExpect(
 				status().isCreated()).andReturn();
 
 		String location = mvcResult.getResponse().getHeader("Location");
 
-		try {
-			mockMvc.perform(put(location).content(
-					"{\"emailAddress\": \"" + EMAIL_ADDRESS_2 + "\"}")).andExpect(
-					status().isNoContent());
-		} catch (Exception e) {
-			//TODO instead of expecting an exception, this should return an api error message stating that the emailaddress can not be changed... (why not actually? Seems like a valid action)
-		}
+		mockMvc.perform(put(location).content(
+				"{\"emailAddress\": \"" + EMAIL_ADDRESS_2 + "\"}")).andExpect(
+				status().isNoContent());
 
 		String userId = getUserIdFromLocation(location);
 
-		mockMvc.perform(get(location)).andExpect(status().isOk()).andExpect(
+		MvcResult mvcResult2 = mockMvc.perform(get(location)).andExpect(status().isOk()).andExpect(
 				content().json("{\n" +
 						"  \"_links\" : {\n" +
 						"    \"self\" : {\n" +
@@ -115,28 +113,30 @@ class UserRepositoryIT extends AbstractQuestlogApplicationIT {
 						"      \"href\" : \"" + TEST_BASE_URL + "/users/" + userId + "\"\n" +
 						"    }\n" +
 						"  }\n" +
-						"}"));
+						"}"))
+				.andReturn();
+
+		String jsonResponseBody = mvcResult2.getResponse().getContentAsString();
+
+		assertThat(jsonResponseBody, not(containsString(EMAIL_ADDRESS_1)));
+		assertThat(jsonResponseBody, containsString(EMAIL_ADDRESS_2));
 	}
 
 	@Test
-	void shouldNotPartiallyUpdateEntity() throws Exception { //TODO fix org.springframework.dao.DataIntegrityViolationException: could not execute statement; SQL [n/a]; constraint ["UK_D0AR1H7WCP7LDY6QG5859SOL6_INDEX_2 ON PUBLIC.USER(EMAIL_ADDRESS) VALUES ('test@e-mail.address', 2)"; SQL statement:
+	void shouldUpdateEmailAddressOfTheUserWithPatch() throws Exception {
 		MvcResult mvcResult = mockMvc.perform(post("/users").content(
 				"{\"emailAddress\": \"" + EMAIL_ADDRESS_1 + "\"}")).andExpect(
 				status().isCreated()).andReturn();
 
 		String location = mvcResult.getResponse().getHeader("Location");
 
-		try {
-			mockMvc.perform(patch(location).content(
-					"{\"emailAddress\": \"" + EMAIL_ADDRESS_2 + "\"}")).andExpect(
-					status().isNoContent());
-		} catch (Exception e) {
-			//TODO instead of expecting an exception, this should return an api error message stating that the emailaddress can not be changed... (why not actually? Seems like a valid action)
-		}
+		mockMvc.perform(patch(location).content(
+				"{\"emailAddress\": \"" + EMAIL_ADDRESS_2 + "\"}")).andExpect(
+				status().isNoContent());
 
 		String userId = getUserIdFromLocation(location);
 
-		mockMvc.perform(get(location)).andExpect(status().isOk()).andExpect(
+		MvcResult mvcResult2 = mockMvc.perform(get(location)).andExpect(status().isOk()).andExpect(
 				content().json("{\n" +
 						"  \"_links\" : {\n" +
 						"    \"self\" : {\n" +
@@ -146,8 +146,13 @@ class UserRepositoryIT extends AbstractQuestlogApplicationIT {
 						"      \"href\" : \"" + TEST_BASE_URL + "/users/" + userId + "\"\n" +
 						"    }\n" +
 						"  }\n" +
-						"}"));
-		//TODO this does not assert the same e-mail address (is it still the same, don't think so?)
+						"}"))
+				.andReturn();
+
+		String jsonResponseBody = mvcResult2.getResponse().getContentAsString();
+
+		assertThat(jsonResponseBody, not(containsString(EMAIL_ADDRESS_1)));
+		assertThat(jsonResponseBody, containsString(EMAIL_ADDRESS_2));
 	}
 
 	@Test
