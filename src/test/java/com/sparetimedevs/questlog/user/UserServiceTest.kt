@@ -4,16 +4,19 @@ import com.sparetimedevs.questlog.login.Login
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.equalTo
 import org.junit.Assert.assertThat
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
-import org.mockito.MockitoAnnotations.initMocks
+import testsetup.EMAIL_ADDRESS_1
+import testsetup.PASSWORD_1
+import testsetup.userId1
+import testsupport.MockitoExtension
 import java.util.Optional
-import java.util.UUID
 
+@ExtendWith(MockitoExtension::class)
 internal class UserServiceTest {
 
 	@InjectMocks
@@ -22,23 +25,15 @@ internal class UserServiceTest {
 	@Mock
 	private lateinit var userRepository: UserRepository
 
-	private val id = UUID.randomUUID()
-	private val emailAddress = "abc"
-	private val password = "def"
-	private val user = User(id, emailAddress)
-	private val login = Login(user.emailAddress, password)
-
-	@BeforeEach
-	internal fun init() {
-		initMocks(this)
-	}
+	private val user = User(userId1, EMAIL_ADDRESS_1)
+	private val login = Login(user.emailAddress, PASSWORD_1)
 
 	@Test
 	internal fun givenLoginWithEmailAddressThatIsFindableWhenGetUserIdReturnsUsersId() {
 		`when`(userRepository.findByEmailAddress(login.emailAddress)).thenReturn(Optional.of(user))
 
 		val userId = userService.getUserId(login)
-		assertThat(userId, `is`(equalTo(id)))
+		assertThat(userId, `is`(equalTo(userId1)))
 	}
 
 	@Test
