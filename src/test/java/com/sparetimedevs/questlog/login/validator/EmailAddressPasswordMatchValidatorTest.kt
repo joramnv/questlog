@@ -5,39 +5,30 @@ import com.sparetimedevs.questlog.login.exception.EmailAddressPasswordDoNotMatch
 import com.sparetimedevs.questlog.user.UserService
 import com.sparetimedevs.questlog.userpassword.UserPassword
 import com.sparetimedevs.questlog.userpassword.UserPasswordService
+import io.kotlintest.shouldBe
+import io.kotlintest.specs.StringSpec
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.core.Is.`is`
 import org.hamcrest.core.IsNot.not
 import org.junit.jupiter.api.Assertions.assertThrows
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
-import org.mockito.InjectMocks
-import org.mockito.Mock
 import org.mockito.Mockito.`when`
+import org.mockito.Mockito.mock
 import testsetup.EMAIL_ADDRESS_1
 import testsetup.PASSWORD_1
 import testsetup.PASSWORD_2
 import testsetup.userId1
 import testsetup.userPasswordId1
-import testsupport.MockitoExtension
 
-@ExtendWith(MockitoExtension::class)
-internal class EmailAddressPasswordMatchValidatorTest {
+class EmailAddressPasswordMatchValidatorTest : StringSpec({
 
-	@InjectMocks
-	private lateinit var loginValidator: LoginValidator
+	val userService: UserService = mock(UserService::class.java)
+	val userPasswordService: UserPasswordService = mock(UserPasswordService::class.java)
+	val loginValidator = LoginValidator(userService, userPasswordService)
 
-	@Mock
-	private lateinit var userService: UserService
+	val userPassword = UserPassword(userPasswordId1, userId1, PASSWORD_1)
 
-	@Mock
-	private lateinit var userPasswordService: UserPasswordService
-
-	@Test
-	@Throws(Exception::class)
-	fun givenMatchingEmailAddressAndPasswordWhenValidateIsCalledResultsInNoException() {
-		val userPassword = UserPassword(userPasswordId1, userId1, PASSWORD_1)
+	"given matching email address and password when validate is called then users id is returned" {
 		val login = Login(EMAIL_ADDRESS_1, PASSWORD_1)
 
 		`when`(userService.getUserId(login)).thenReturn(userId1)
@@ -45,14 +36,11 @@ internal class EmailAddressPasswordMatchValidatorTest {
 
 		val returnedUserId = loginValidator.validate(login)
 
-		assertThat(userPassword.password, `is`(equalTo(PASSWORD_1)))
-		assertThat(returnedUserId, `is`(equalTo(userId1)))
+		userPassword.password shouldBe PASSWORD_1
+		returnedUserId shouldBe userId1
 	}
 
-	@Test
-	@Throws(Exception::class)
-	fun givenMatchingEmailAddressAndPasswordWhenValidateIsCalledThrowsEmailAddressPasswordDoNotMatchException() {
-		val userPassword = UserPassword(userPasswordId1, userId1, PASSWORD_1)
+	"given matching email address and password when validate is called then EmailAddressPasswordDoNotMatchException is thrown" {
 		val login = Login(EMAIL_ADDRESS_1, PASSWORD_2)
 
 		`when`(userService.getUserId(login)).thenReturn(userId1)
@@ -60,5 +48,7 @@ internal class EmailAddressPasswordMatchValidatorTest {
 
 		assertThrows(EmailAddressPasswordDoNotMatchException::class.java) { loginValidator.validate(login) }
 		assertThat(userPassword.password, `is`(not(equalTo(PASSWORD_2))))
+		//TODO use kotlintest instead of assertThat..
 	}
-}
+
+})

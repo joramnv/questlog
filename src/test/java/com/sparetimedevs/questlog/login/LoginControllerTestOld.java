@@ -34,7 +34,7 @@ import static testsetup.TestDataKt.EMAIL_ADDRESS_2;
 @ExtendWith({SpringExtension.class, MockitoExtension.class})
 @WebMvcTest(LoginController.class)
 @ContextConfiguration(classes = {LoginController.class})
-class LoginControllerTest {
+class LoginControllerTestOld {
 
 	private static final String TEST_EMAIL_ADDRESS_1 = "test@e-mail.address";
 	private static final String TEST_PASSWORD_1 = "test_password";
