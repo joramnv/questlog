@@ -1,21 +1,22 @@
 buildscript {
     ext {
-        junit_platform_version = '1.1.1'
-        spring_boot_version = '2.0.1.RELEASE'
         kotlin_version = '1.2.41'
+        spring_boot_version = '2.0.1.RELEASE'
+        fasterxml_jackson_version = '2.9.5'
+        junit_platform_version = '1.1.1'
         junit_jupiter_version = '5.1.1'
         mockito_core_version = '2.18.0'
-        fasterxml_jackson_version = '2.9.5'
+        kotlintest_version = '3.1.0'
     }
     repositories {
         mavenCentral()
     }
     dependencies {
-        classpath "org.junit.platform:junit-platform-gradle-plugin:$junit_platform_version"
-        classpath "org.springframework.boot:spring-boot-gradle-plugin:$spring_boot_version"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "org.jetbrains.kotlin:kotlin-allopen:$kotlin_version"
         classpath "org.jetbrains.kotlin:kotlin-noarg:$kotlin_version"
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:$spring_boot_version"
+        classpath "org.junit.platform:junit-platform-gradle-plugin:$junit_platform_version"
     }
 }
 
@@ -66,7 +67,8 @@ dependencies {
     testCompile "org.junit.jupiter:junit-jupiter-api:$junit_jupiter_version"
     testCompile "org.mockito:mockito-core:$mockito_core_version"
     testCompile "org.springframework.boot:spring-boot-starter-test"
-    testCompile 'io.kotlintest:kotlintest-runner-junit5:3.1.0'
+    testCompile "io.kotlintest:kotlintest-runner-junit5:$kotlintest_version"
+    testCompile "io.kotlintest:kotlintest-extensions-spring:$kotlintest_version"
 
     testRuntime "org.junit.jupiter:junit-jupiter-engine:$junit_jupiter_version"
 }
