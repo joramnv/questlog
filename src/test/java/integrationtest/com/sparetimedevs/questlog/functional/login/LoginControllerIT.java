@@ -20,12 +20,12 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static testsetup.TestDataKt.EMAIL_ADDRESS_1;
-import static testsetup.TestDataKt.EMAIL_ADDRESS_2;
-import static testsetup.TestDataKt.PASSWORD_1;
-import static testsetup.TestDataKt.PASSWORD_2;
-import static testsetup.TestDataKt.getUserId1;
-import static testsetup.TestDataKt.getUserPasswordId1;
+import static test.TestDataKt.EMAIL_ADDRESS_1;
+import static test.TestDataKt.EMAIL_ADDRESS_2;
+import static test.TestDataKt.PASSWORD_1;
+import static test.TestDataKt.PASSWORD_2;
+import static test.TestDataKt.getUserId1;
+import static test.TestDataKt.getUserPasswordId1;
 
 
 class LoginControllerIT extends AbstractQuestlogApplicationIT {

@@ -26,9 +26,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static testsetup.TestDataKt.EMAIL_ADDRESS_1;
-import static testsetup.TestDataKt.EMAIL_ADDRESS_2;
-import static testsetup.TestDataKt.getUserId1;
+import static test.TestDataKt.EMAIL_ADDRESS_1;
+import static test.TestDataKt.EMAIL_ADDRESS_2;
+import static test.TestDataKt.getUserId1;
 
 class UserRepositoryIT extends AbstractQuestlogApplicationIT {
 

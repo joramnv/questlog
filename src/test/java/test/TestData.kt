@@ -1,4 +1,4 @@
-package testsetup
+package test
 
 import java.util.UUID
 
@@ -10,10 +10,6 @@ const val PASSWORD_2 = "a_different_test_password"
 private const val MOST_SIG_BITS_USER_ID_1 = 54321L
 private const val LEAST_SIG_BITS_USER_ID_1 = 12345L
 val userId1 = UUID(MOST_SIG_BITS_USER_ID_1, LEAST_SIG_BITS_USER_ID_1)
-
-private const val MOST_SIG_BITS_QUEST_ID_1 = 65432L
-private const val LEAST_SIG_BITS_QUEST_ID_1 = 23456L
-val questId1 = UUID(MOST_SIG_BITS_QUEST_ID_1, LEAST_SIG_BITS_QUEST_ID_1)
 
 private const val MOST_SIG_BITS_USER_PASSWORD_ID_1 = 76543L
 private const val LEAST_SIG_BITS_USER_PASSWORD_ID_1 = 34567L

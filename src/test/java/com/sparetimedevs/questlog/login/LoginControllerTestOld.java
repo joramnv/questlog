@@ -1,21 +1,17 @@
 package com.sparetimedevs.questlog.login;
 
-import com.sparetimedevs.questlog.login.exception.EmailAddressPasswordDoNotMatchException;
 import com.sparetimedevs.questlog.login.exception.LoginResponseEntityExceptionHandler;
 import com.sparetimedevs.questlog.login.validator.LoginValidator;
 import com.sparetimedevs.questlog.user.exception.UserResponseEntityExceptionHandler;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import testsupport.MockitoExtension;
+import test.support.MockitoExtension;
 
 import java.util.UUID;
 
@@ -29,7 +25,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static testsetup.TestDataKt.EMAIL_ADDRESS_2;
 
 @ExtendWith({SpringExtension.class, MockitoExtension.class})
 @WebMvcTest(LoginController.class)

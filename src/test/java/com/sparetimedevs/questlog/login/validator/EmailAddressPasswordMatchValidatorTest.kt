@@ -14,11 +14,11 @@ import org.hamcrest.core.IsNot.not
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
-import testsetup.EMAIL_ADDRESS_1
-import testsetup.PASSWORD_1
-import testsetup.PASSWORD_2
-import testsetup.userId1
-import testsetup.userPasswordId1
+import test.EMAIL_ADDRESS_1
+import test.PASSWORD_1
+import test.PASSWORD_2
+import test.userId1
+import test.userPasswordId1
 
 class EmailAddressPasswordMatchValidatorTest : StringSpec({
 
@@ -28,7 +28,7 @@ class EmailAddressPasswordMatchValidatorTest : StringSpec({
 
 	val userPassword = UserPassword(userPasswordId1, userId1, PASSWORD_1)
 
-	"given matching email address and password when validate is called then users id is returned" {
+	"given matching email address and password when validate then users id is returned" {
 		val login = Login(EMAIL_ADDRESS_1, PASSWORD_1)
 
 		`when`(userService.getUserId(login)).thenReturn(userId1)
@@ -40,7 +40,7 @@ class EmailAddressPasswordMatchValidatorTest : StringSpec({
 		returnedUserId shouldBe userId1
 	}
 
-	"given matching email address and password when validate is called then EmailAddressPasswordDoNotMatchException is thrown" {
+	"given matching email address and password when validate then EmailAddressPasswordDoNotMatchException is thrown" {
 		val login = Login(EMAIL_ADDRESS_1, PASSWORD_2)
 
 		`when`(userService.getUserId(login)).thenReturn(userId1)
