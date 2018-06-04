@@ -31,11 +31,6 @@ import test.userId1
 @AutoConfigureMockMvc
 class QuestEndpointTest : StringSpec() {
 
-	//'In the above code I added the SpringListener only to a single class but you can use it project wide
-	// by adding it to your ProjectConfig.'
-	// see https://stackoverflow.com/questions/47352559/how-do-get-kotlintest-to-work-with-spring
-	override fun listeners() = listOf(SpringListener)
-
 	@Autowired
 	lateinit var mockMvc: MockMvc
 
