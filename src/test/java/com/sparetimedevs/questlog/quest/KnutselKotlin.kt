@@ -2,11 +2,9 @@ package com.sparetimedevs.questlog.quest
 
 import com.sparetimedevs.questlog.user.User
 import io.kotlintest.specs.StringSpec
-import io.kotlintest.spring.SpringListener
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mockito
 import org.mockito.Mockito.`when`
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
@@ -28,16 +26,11 @@ import java.util.ArrayList
 @ExtendWith(SpringExtension::class, MockitoExtension::class)
 @WebMvcTest(QuestController::class)
 @ContextConfiguration(classes = [QuestController::class])
-internal class KnutselKotlin : StringSpec() {
-
-	@Autowired
-	private val mockMvc: MockMvc? = null
-
-	@Autowired
-	private val repositoryEntityLinks: RepositoryEntityLinks? = null
-
-	@Autowired
-	private val questRepository: QuestRepository? = null
+internal class KnutselKotlin(
+		private val mockMvc: MockMvc,
+		private val repositoryEntityLinks: RepositoryEntityLinks,
+		private val questRepository: QuestRepository
+) : StringSpec() {
 
 	@TestConfiguration
 	internal class EmployeeServiceImplTestContextConfiguration {

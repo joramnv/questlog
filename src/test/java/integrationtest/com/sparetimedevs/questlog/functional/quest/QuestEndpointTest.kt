@@ -7,11 +7,9 @@ import com.sparetimedevs.questlog.user.User
 import com.sparetimedevs.questlog.user.UserRepository
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
-import io.kotlintest.spring.SpringListener
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.extension.ExtendWith
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.HttpStatus
@@ -29,16 +27,11 @@ import test.userId1
 @ExtendWith(SpringExtension::class)
 @SpringBootTest(classes = [QuestlogApplication::class])
 @AutoConfigureMockMvc
-class QuestEndpointTest : StringSpec() {
-
-	@Autowired
-	lateinit var mockMvc: MockMvc
-
-	@Autowired
-	lateinit var questRepository: QuestRepository
-
-	@Autowired
-	lateinit var userRepository: UserRepository
+class QuestEndpointTest(
+		private val mockMvc: MockMvc,
+		private val questRepository: QuestRepository,
+		private val userRepository: UserRepository
+) : StringSpec() {
 
 	@BeforeEach
 	@Throws(Exception::class)
