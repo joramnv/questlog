@@ -30,7 +30,7 @@ import static test.TestDataKt.EMAIL_ADDRESS_1;
 import static test.TestDataKt.EMAIL_ADDRESS_2;
 import static test.TestDataKt.getUserId1;
 
-class UserRepositoryIT extends AbstractQuestlogApplicationIT {
+class UserRepositoryITOld extends AbstractQuestlogApplicationIT {
 
 	private MockMvc mockMvc;
 

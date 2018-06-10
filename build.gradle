@@ -6,7 +6,7 @@ buildscript {
         junit_platform_version = '1.1.1'
         junit_jupiter_version = '5.1.1'
         mockito_core_version = '2.18.0'
-        kotlintest_version = '3.1.0'
+        kotlintest_version = '3.1.6'
     }
     repositories {
         mavenCentral()
