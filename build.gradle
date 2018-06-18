@@ -36,6 +36,12 @@ jar {
     version = '0.0.1'
 }
 
+kotlin {
+    experimental {
+        coroutines 'enable'
+    }
+}
+
 noArg {
     invokeInitializers = true
 }
