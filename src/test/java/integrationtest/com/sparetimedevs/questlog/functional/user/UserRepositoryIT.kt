@@ -21,6 +21,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.header
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import test.EMAIL_ADDRESS_1
@@ -170,6 +171,28 @@ class UserRepositoryIT(
 			val url = "http://localhost/users/$userId1"
 
 			mockMvc.perform(get(url)).andExpect(status().isNotFound)
+		}
+
+		"should test etag properly, see http://www.baeldung.com/etags-for-rest-with-spring" { //TODO write 2 more etag tests...
+			val mvcResult = mockMvc.perform(post("/users").content(
+					"{\"emailAddress\": \"$EMAIL_ADDRESS_1\"}")).andExpect(
+					status().isCreated).andReturn()
+
+			val location = mvcResult.response.getHeader("Location")!!
+			val userId = getUserIdFromLocation(location)
+			val mvcResult2 = mockMvc.perform(get(location)).andExpect(status().isOk).andExpect(
+					content().json("{\n" +
+							"  \"_links\" : {\n" +
+							"    \"self\" : {\n" +
+							"      \"href\" : \"$TEST_BASE_URL/users/$userId\"\n" +
+							"    },\n" +
+							"    \"user\" : {\n" +
+							"      \"href\" : \"$TEST_BASE_URL/users/$userId\"\n" +
+							"    }\n" +
+							"  }\n" +
+							"}")).andExpect(header().exists("ETag"))
+
+			tearDown(EMAIL_ADDRESS_1)
 		}
 	}
 }
