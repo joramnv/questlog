@@ -27,7 +27,7 @@ import test.userId1
 @ExtendWith(SpringExtension::class)
 @SpringBootTest(classes = [QuestlogApplication::class])
 @AutoConfigureMockMvc
-class QuestEndpointTest(
+class QuestRepositoryIT(
 		private val mockMvc: MockMvc,
 		private val questRepository: QuestRepository,
 		private val userRepository: UserRepository
@@ -62,9 +62,11 @@ class QuestEndpointTest(
 
 	init {
 		"should return repository index" {
-			val mvcResult = mockMvc.perform(get("/quests")).andDo(print()).andExpect(status().isOk).andExpect(
-					jsonPath("$._links.self").exists()).andReturn()
-			mvcResult.response.status shouldBe HttpStatus.OK.value()
+			val mvcResult = mockMvc.perform(get("/quests"))
+					.andDo(print())
+					.andExpect(status().isOk)
+					.andExpect(jsonPath("$._links.self").exists())
+					.andReturn()
 		}
 
 		"given I write more tests when I have time then I can determine if I like this" {

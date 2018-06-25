@@ -5,13 +5,12 @@ import com.sparetimedevs.questlog.login.exception.EmailAddressPasswordDoNotMatch
 import com.sparetimedevs.questlog.user.UserService
 import com.sparetimedevs.questlog.userpassword.UserPassword
 import com.sparetimedevs.questlog.userpassword.UserPasswordService
+import io.kotlintest.matchers.string.contain
+import io.kotlintest.should
 import io.kotlintest.shouldBe
+import io.kotlintest.shouldNotBe
+import io.kotlintest.shouldThrowExactly
 import io.kotlintest.specs.StringSpec
-import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.equalTo
-import org.hamcrest.core.Is.`is`
-import org.hamcrest.core.IsNot.not
-import org.junit.jupiter.api.Assertions.assertThrows
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 import test.EMAIL_ADDRESS_1
@@ -46,9 +45,10 @@ class EmailAddressPasswordMatchValidatorTest : StringSpec({
 		`when`(userService.getUserId(login)).thenReturn(userId1)
 		`when`(userPasswordService.getUserPassword(userId1)).thenReturn(userPassword)
 
-		assertThrows(EmailAddressPasswordDoNotMatchException::class.java) { loginValidator.validate(login) }
-		assertThat(userPassword.password, `is`(not(equalTo(PASSWORD_2))))
-		//TODO use kotlintest instead of assertThat..
+		val exception = shouldThrowExactly<EmailAddressPasswordDoNotMatchException> {
+			loginValidator.validate(login)
+		}
+		exception.message should contain("E-mail address password combination do not match for e-mail address ")
+		userPassword.password shouldNotBe PASSWORD_2
 	}
-
 })

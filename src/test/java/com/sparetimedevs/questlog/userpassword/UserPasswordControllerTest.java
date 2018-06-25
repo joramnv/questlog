@@ -47,8 +47,10 @@ class UserPasswordControllerTest {
 	//TODO write unit tests for UserPasswordController
 	@Test
 	void shouldReturnRepositoryIndex() throws Exception {
-		mockMvc.perform(get("/save-password")).andDo(print()).andExpect(status().isOk()).andExpect(
-				jsonPath("$._links.self").exists());
+		mockMvc.perform(get("/save-password"))
+				.andDo(print())
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$._links.self").exists());
 	}
 
 	@Test

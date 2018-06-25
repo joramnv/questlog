@@ -3,12 +3,11 @@ package integrationtest.com.sparetimedevs.questlog.functional.user
 import com.sparetimedevs.questlog.QuestlogApplication
 import com.sparetimedevs.questlog.user.UserRepository
 import integrationtest.com.sparetimedevs.questlog.functional.AbstractQuestlogApplicationIT.TEST_BASE_URL
+import io.kotlintest.matchers.string.contain
+import io.kotlintest.should
+import io.kotlintest.shouldNot
+import io.kotlintest.shouldNotBe
 import io.kotlintest.specs.StringSpec
-import org.hamcrest.CoreMatchers.`is`
-import org.hamcrest.CoreMatchers.containsString
-import org.hamcrest.CoreMatchers.not
-import org.hamcrest.CoreMatchers.notNullValue
-import org.hamcrest.MatcherAssert.assertThat
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
@@ -46,22 +45,24 @@ class UserRepositoryIT(
 	}
 
 	init {
-		//TODO replace hamcrast asserts and matchers with kotlin matcher. -> mvcResult.response.status shouldBe HttpStatus.OK.value()
 		//TODO change names of tests to given when then.
 
 		"should return repository index" {
-			mockMvc.perform(get("/users")).andDo(print()).andExpect(status().isOk).andExpect(
-					jsonPath("$._links.self").exists())
+			mockMvc.perform(get("/users"))
+					.andDo(print())
+					.andExpect(status().isOk)
+					.andExpect(jsonPath("$._links.self").exists())
 		}
 
 		"should create entity" {
 			val mvcResult = mockMvc.perform(post("/users").content(
-					"{\"emailAddress\": \"$EMAIL_ADDRESS_1\"}")).andExpect(
-					status().isCreated).andReturn()
+					"{\"emailAddress\": \"$EMAIL_ADDRESS_1\"}"))
+					.andExpect(status().isCreated)
+					.andReturn()
 
 			val location = mvcResult.response.getHeader("Location")!!
 			val userId = getUserIdFromLocation(location)
-			assertThat(userId, `is`(notNullValue()))
+			userId shouldNotBe null
 
 			tearDown(EMAIL_ADDRESS_1)
 		}
@@ -73,8 +74,9 @@ class UserRepositoryIT(
 
 			val location = mvcResult.response.getHeader("Location")!!
 			val userId = getUserIdFromLocation(location)
-			mockMvc.perform(get(location)).andExpect(status().isOk).andExpect(
-					content().json("{\n" +
+			mockMvc.perform(get(location))
+					.andExpect(status().isOk)
+					.andExpect(content().json("{\n" +
 							"  \"_links\" : {\n" +
 							"    \"self\" : {\n" +
 							"      \"href\" : \"$TEST_BASE_URL/users/$userId\"\n" +
@@ -90,19 +92,20 @@ class UserRepositoryIT(
 
 		"should update email address of the user with put" {
 			val mvcResult = mockMvc.perform(post("/users").content(
-					"{\"emailAddress\": \"$EMAIL_ADDRESS_1\"}")).andExpect(
-					status().isCreated).andReturn()
+					"{\"emailAddress\": \"$EMAIL_ADDRESS_1\"}"))
+					.andExpect(status().isCreated).andReturn()
 
 			val location = mvcResult.response.getHeader("Location")!!
 
 			mockMvc.perform(put(location).content(
-					"{\"emailAddress\": \"$EMAIL_ADDRESS_2\"}")).andExpect(
-					status().isNoContent)
+					"{\"emailAddress\": \"$EMAIL_ADDRESS_2\"}"))
+					.andExpect(status().isNoContent)
 
 			val userId = getUserIdFromLocation(location)
 
-			val mvcResult2 = mockMvc.perform(get(location)).andExpect(status().isOk).andExpect(
-					content().json("{\n" +
+			val mvcResult2 = mockMvc.perform(get(location))
+					.andExpect(status().isOk)
+					.andExpect(content().json("{\n" +
 							"  \"_links\" : {\n" +
 							"    \"self\" : {\n" +
 							"      \"href\" : \"$TEST_BASE_URL/users/$userId\"\n" +
@@ -115,28 +118,29 @@ class UserRepositoryIT(
 					.andReturn()
 
 			val jsonResponseBody = mvcResult2.response.contentAsString
-
-			assertThat(jsonResponseBody, not(containsString(EMAIL_ADDRESS_1)))
-			assertThat(jsonResponseBody, containsString(EMAIL_ADDRESS_2))
+			jsonResponseBody should contain(EMAIL_ADDRESS_2)
+			jsonResponseBody shouldNot contain(EMAIL_ADDRESS_1)
 
 			tearDown(EMAIL_ADDRESS_2)
 		}
 
 		"should update email address of the user with patch" {
 			val mvcResult = mockMvc.perform(post("/users").content(
-					"{\"emailAddress\": \"$EMAIL_ADDRESS_1\"}")).andExpect(
-					status().isCreated).andReturn()
+					"{\"emailAddress\": \"$EMAIL_ADDRESS_1\"}"))
+					.andExpect(status().isCreated)
+					.andReturn()
 
 			val location = mvcResult.response.getHeader("Location")!!
 
 			mockMvc.perform(patch(location).content(
-					"{\"emailAddress\": \"$EMAIL_ADDRESS_2\"}")).andExpect(
-					status().isNoContent)
+					"{\"emailAddress\": \"$EMAIL_ADDRESS_2\"}"))
+					.andExpect(status().isNoContent)
 
 			val userId = getUserIdFromLocation(location)
 
-			val mvcResult2 = mockMvc.perform(get(location)).andExpect(status().isOk).andExpect(
-					content().json("{\n" +
+			val mvcResult2 = mockMvc.perform(get(location))
+					.andExpect(status().isOk)
+					.andExpect(content().json("{\n" +
 							"  \"_links\" : {\n" +
 							"    \"self\" : {\n" +
 							"      \"href\" : \"$TEST_BASE_URL/users/$userId\"\n" +
@@ -149,39 +153,44 @@ class UserRepositoryIT(
 					.andReturn()
 
 			val jsonResponseBody = mvcResult2.response.contentAsString
-
-			assertThat(jsonResponseBody, not(containsString(EMAIL_ADDRESS_1)))
-			assertThat(jsonResponseBody, containsString(EMAIL_ADDRESS_2))
+			jsonResponseBody should contain(EMAIL_ADDRESS_2)
+			jsonResponseBody shouldNot contain(EMAIL_ADDRESS_1)
 
 			tearDown(EMAIL_ADDRESS_2)
 		}
 
 		"should delete entity" {
 			val mvcResult = mockMvc.perform(post("/users").content(
-					"{\"emailAddress\": \"$EMAIL_ADDRESS_1\"}")).andExpect(
-					status().isCreated).andReturn()
+					"{\"emailAddress\": \"$EMAIL_ADDRESS_1\"}"))
+					.andExpect(status().isCreated)
+					.andReturn()
 
 			val location = mvcResult.response.getHeader("Location")!!
-			mockMvc.perform(delete(location)).andExpect(status().isNoContent)
+			mockMvc.perform(delete(location))
+					.andExpect(status().isNoContent)
 
-			mockMvc.perform(get(location)).andExpect(status().isNotFound)
+			mockMvc.perform(get(location))
+					.andExpect(status().isNotFound)
 		}
 
 		"should return status is not found when trying to get an entity that is not present in the database" {
 			val url = "http://localhost/users/$userId1"
 
-			mockMvc.perform(get(url)).andExpect(status().isNotFound)
+			mockMvc.perform(get(url))
+					.andExpect(status().isNotFound)
 		}
 
-		"should test etag properly, see http://www.baeldung.com/etags-for-rest-with-spring" { //TODO write 2 more etag tests...
+		"given user resource exists when retrieving user resource then ETag is also returned" {
 			val mvcResult = mockMvc.perform(post("/users").content(
-					"{\"emailAddress\": \"$EMAIL_ADDRESS_1\"}")).andExpect(
-					status().isCreated).andReturn()
+					"{\"emailAddress\": \"$EMAIL_ADDRESS_1\"}"))
+					.andExpect(status().isCreated)
+					.andReturn()
 
 			val location = mvcResult.response.getHeader("Location")!!
 			val userId = getUserIdFromLocation(location)
-			val mvcResult2 = mockMvc.perform(get(location)).andExpect(status().isOk).andExpect(
-					content().json("{\n" +
+			mockMvc.perform(get(location))
+					.andExpect(status().isOk)
+					.andExpect(content().json("{\n" +
 							"  \"_links\" : {\n" +
 							"    \"self\" : {\n" +
 							"      \"href\" : \"$TEST_BASE_URL/users/$userId\"\n" +
@@ -190,7 +199,88 @@ class UserRepositoryIT(
 							"      \"href\" : \"$TEST_BASE_URL/users/$userId\"\n" +
 							"    }\n" +
 							"  }\n" +
-							"}")).andExpect(header().exists("ETag"))
+							"}"))
+					.andExpect(header().exists("ETag"))
+
+			tearDown(EMAIL_ADDRESS_1)
+		}
+
+		"given user resource was retrieved when retrieving again with ETag then not modified is returned" {
+			val mvcResult = mockMvc.perform(post("/users").content(
+					"{\"emailAddress\": \"$EMAIL_ADDRESS_1\"}")).andExpect(
+					status().isCreated).andReturn()
+
+			val location = mvcResult.response.getHeader("Location")!!
+			val userId = getUserIdFromLocation(location)
+			val mvcResult2 = mockMvc.perform(get(location))
+					.andExpect(status().isOk)
+					.andExpect(content().json("{\n" +
+							"  \"_links\" : {\n" +
+							"    \"self\" : {\n" +
+							"      \"href\" : \"$TEST_BASE_URL/users/$userId\"\n" +
+							"    },\n" +
+							"    \"user\" : {\n" +
+							"      \"href\" : \"$TEST_BASE_URL/users/$userId\"\n" +
+							"    }\n" +
+							"  }\n" +
+							"}"))
+					.andExpect(header().exists("ETag"))
+					.andReturn()
+
+			val etagValue = mvcResult2.response.getHeaderValue("ETag")!!
+
+			mockMvc.perform(get(location).header("If-None-Match", etagValue))
+					.andExpect(status().isNotModified)
+					.andExpect(header().exists("ETag"))
+					.andReturn()
+
+			tearDown(EMAIL_ADDRESS_1)
+		}
+
+		"given user resource was retrieved then modified when retrieving again with ETag then user resource is returned" { //TODO write this etag tests..., see http://www.baeldung.com/etags-for-rest-with-spring
+			val mvcResult = mockMvc.perform(post("/users").content(
+					"{\"emailAddress\": \"$EMAIL_ADDRESS_1\"}"))
+					.andExpect(status().isCreated)
+					.andReturn()
+
+			val location = mvcResult.response.getHeader("Location")!!
+			val userId = getUserIdFromLocation(location)
+			val mvcResult2 = mockMvc.perform(get(location))
+					.andExpect(status().isOk)
+					.andExpect(content().json("{\n" +
+							"  \"_links\" : {\n" +
+							"    \"self\" : {\n" +
+							"      \"href\" : \"$TEST_BASE_URL/users/$userId\"\n" +
+							"    },\n" +
+							"    \"user\" : {\n" +
+							"      \"href\" : \"$TEST_BASE_URL/users/$userId\"\n" +
+							"    }\n" +
+							"  }\n" +
+							"}"))
+					.andExpect(header().exists("ETag"))
+					.andReturn()
+
+			val etagValue = mvcResult2.response.getHeaderValue("ETag")!!
+
+			//TODO change user object.
+			mockMvc.perform(put(location).content(
+					"{\"emailAddress\": \"$EMAIL_ADDRESS_2\"}"))
+					.andExpect(status().isNoContent)
+
+			mockMvc.perform(get(location).header("If-None-Match", etagValue))
+					.andExpect(status().isOk)
+					.andExpect(content().json("{\n" +
+							"  \"_links\" : {\n" +
+							"    \"self\" : {\n" +
+							"      \"href\" : \"$TEST_BASE_URL/users/$userId\"\n" +
+							"    },\n" +
+							"    \"user\" : {\n" +
+							"      \"href\" : \"$TEST_BASE_URL/users/$userId\"\n" +
+							"    }\n" +
+							"  }\n" +
+							"}"))
+					.andExpect(header().exists("ETag"))
+					.andReturn()
 
 			tearDown(EMAIL_ADDRESS_1)
 		}

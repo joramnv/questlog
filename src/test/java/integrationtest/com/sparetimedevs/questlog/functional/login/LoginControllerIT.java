@@ -27,7 +27,6 @@ import static test.TestDataKt.PASSWORD_2;
 import static test.TestDataKt.getUserId1;
 import static test.TestDataKt.getUserPasswordId1;
 
-
 class LoginControllerIT extends AbstractQuestlogApplicationIT {
 
 	@Autowired
@@ -66,8 +65,10 @@ class LoginControllerIT extends AbstractQuestlogApplicationIT {
 
 	@Test
 	void shouldReturnRepositoryIndex() throws Exception {
-		mockMvc.perform(get("/login")).andDo(print()).andExpect(status().isOk()).andExpect(
-				jsonPath("$._links.self").exists());
+		mockMvc.perform(get("/login"))
+				.andDo(print())
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$._links.self").exists());
 	}
 
 	@Test

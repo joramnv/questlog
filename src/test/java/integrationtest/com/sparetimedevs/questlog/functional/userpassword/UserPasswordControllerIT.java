@@ -37,8 +37,10 @@ class UserPasswordControllerIT extends AbstractQuestlogApplicationIT {
 
 	@Test
 	void shouldReturnRepositoryIndex() throws Exception {
-		mockMvc.perform(get("/save-password")).andDo(print()).andExpect(status().isOk()).andExpect(
-				jsonPath("$._links.self").exists());
+		mockMvc.perform(get("/save-password"))
+				.andDo(print())
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$._links.self").exists());
 	}
 
 	//TODO write specific UserPasswordController tests.

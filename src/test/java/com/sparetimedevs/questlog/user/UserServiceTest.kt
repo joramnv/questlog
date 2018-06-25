@@ -1,9 +1,12 @@
 package com.sparetimedevs.questlog.user
 
 import com.sparetimedevs.questlog.login.Login
+import com.sparetimedevs.questlog.user.exception.UserNotFoundException
+import io.kotlintest.matchers.string.contain
+import io.kotlintest.should
 import io.kotlintest.shouldBe
+import io.kotlintest.shouldThrowExactly
 import io.kotlintest.specs.StringSpec
-import org.junit.jupiter.api.assertThrows
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 import test.EMAIL_ADDRESS_1
@@ -29,9 +32,9 @@ class UserServiceTest : StringSpec({
 	"given login with email address that is not findable when get user id then RuntimeException is thrown" {
 		`when`(userRepository.findByEmailAddress(login.emailAddress)).thenReturn(Optional.empty())
 
-		assertThrows<RuntimeException> {        		//TODO use kotlintest instead of assertThat..
+		val exception = shouldThrowExactly<UserNotFoundException> {
 			userService.getUserId(login)
 		}
+		exception.message should contain("User with e-mail address ")
 	}
-
 })
