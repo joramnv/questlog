@@ -1,4 +1,4 @@
-## questlog
+## Weekly Achievements
 
 Some information about this project
 

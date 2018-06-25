@@ -1,6 +1,6 @@
 package test.data
 
-import com.sparetimedevs.questlog.quest.Quest
+import com.sparetimedevs.weeklyachievements.quest.Quest
 import test.userId1
 import java.util.UUID
 
