@@ -18,7 +18,7 @@ class QuestController(
 		private val repositoryEntityLinks: RepositoryEntityLinks,
 		private val questRepository: QuestRepository
 ) {
-	@RequestMapping(method = [RequestMethod.GET], produces = [(MediaTypes.HAL_JSON_VALUE)], path = ["quests/user/{userId}"])
+	@RequestMapping(method = [RequestMethod.GET], produces = [(MediaTypes.HAL_JSON_VALUE)], path = ["/quests/user/{userId}"])
 	@ResponseBody
 	fun findUserQuests(@PathVariable(value = "userId") userId: UUID): ResponseEntity<Resources<Quest>> {
 		val userQuests = questRepository.findByUserId(userId)

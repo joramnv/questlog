@@ -1,13 +1,15 @@
 package com.sparetimedevs.weeklyachievements
 
-import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
+import org.springframework.boot.runApplication
+import org.springframework.cloud.netflix.eureka.EnableEurekaClient
 import org.springframework.context.annotation.ComponentScan
 
 @SpringBootApplication
+@EnableEurekaClient
 @ComponentScan(basePackages = ["com.sparetimedevs.weeklyachievements"])
 class WeeklyAchievementsApplication
 
 fun main(args: Array<String>) {
-	SpringApplication.run(WeeklyAchievementsApplication::class.java, *args)
+	runApplication<WeeklyAchievementsApplication>(*args)
 }

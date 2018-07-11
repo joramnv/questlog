@@ -2,21 +2,28 @@
 
 Some information about this project
 
+##### This service is subscribed to other microservices via a Eureka discovery service
+
+The discovery service is at:
+* http://localhost:8273/
+
+
 ### Self discoverable via HAL-browser at:
 
-* http://localhost:8090/
+Preferred way of accessing is via the running Gateway via:
 
+* http://localhost:8090/waa
 
-#### Spring HATEOAS
+But you can also access this service directly via:
 
-* https://spring.io/guides/gs/rest-hateoas/
-* https://spring.io/guides/gs/accessing-data-rest/
-* https://docs.spring.io/spring-data/rest/docs/current/reference/html/#projections-excerpts
+* http://localhost:8091/
 
 
 #### H2 Database
 
-* http://localhost:8090/console
+The database console is only directly accessible via:
+
+* http://localhost:8091/console
 
 
 #### Run the application from the terminal:
@@ -40,6 +47,9 @@ Then you can run the JAR file:
 
 #### Interesting links:
 
+* https://spring.io/guides/gs/rest-hateoas/
+* https://spring.io/guides/gs/accessing-data-rest/
+* https://docs.spring.io/spring-data/rest/docs/current/reference/html/#projections-excerpts
 * https://martinfowler.com/articles/richardsonMaturityModel.html
 * http://blog.ploeh.dk/2013/05/01/rest-lesson-learned-avoid-hackable-urls/
 * https://stackoverflow.com/questions/24389733/document-hal-links-from-spring-hateoas-with-swagger

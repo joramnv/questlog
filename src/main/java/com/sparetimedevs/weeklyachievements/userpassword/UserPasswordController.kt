@@ -21,7 +21,7 @@ import java.util.UUID
 import kotlin.collections.ArrayList
 
 @RestController
-@RequestMapping(path = ["save-password"])
+@RequestMapping(path = ["/save-password"])
 class UserPasswordController(
 		private val repositoryEntityLinks: RepositoryEntityLinks,
 		private val userPasswordRepository: UserPasswordRepository,

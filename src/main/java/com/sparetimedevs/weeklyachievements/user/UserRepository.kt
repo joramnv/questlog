@@ -6,7 +6,7 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource
 import java.util.Optional
 import java.util.UUID
 
-@RepositoryRestResource(collectionResourceRel = "users", path = "users")
+@RepositoryRestResource(collectionResourceRel = "users", path = "/users")
 interface UserRepository : PagingAndSortingRepository<User, UUID> {
 
 	fun findByEmailAddress(@Param("EMAIL_ADDRESS") emailAddress: String): Optional<User>
