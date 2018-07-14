@@ -9,16 +9,17 @@ import org.springframework.hateoas.Resource
 import org.springframework.hateoas.Resources
 import org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo
 import org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn
-import org.springframework.http.HttpStatus
+import org.springframework.http.HttpStatus.OK
 import org.springframework.http.MediaType.APPLICATION_JSON_VALUE
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestMethod.*
+import org.springframework.web.bind.annotation.RequestMethod.GET
+import org.springframework.web.bind.annotation.RequestMethod.POST
+import org.springframework.web.bind.annotation.RequestMethod.PUT
 import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.bind.annotation.RestController
 import java.util.UUID
-import kotlin.collections.ArrayList
 
 @RestController
 @RequestMapping(path = ["/save-password"])
@@ -45,7 +46,7 @@ class UserPasswordController(
         val linkToUser = repositoryEntityLinks.linkToSingleResource(User::class.java, userId)
         login.add(linkToUser)
 
-        return ResponseEntity(login, HttpStatus.OK)
+        return ResponseEntity(login, OK)
     }
 
     @RequestMapping(method = [PUT], consumes = [APPLICATION_JSON_VALUE], produces = [HAL_JSON_VALUE])
@@ -62,7 +63,7 @@ class UserPasswordController(
         val linkToUser = repositoryEntityLinks.linkToSingleResource(User::class.java, userId)
         login.add(linkToUser)
 
-        return ResponseEntity(login, HttpStatus.OK)
+        return ResponseEntity(login, OK)
     }
 
     @RequestMapping(method = [GET], produces = [HAL_JSON_VALUE])

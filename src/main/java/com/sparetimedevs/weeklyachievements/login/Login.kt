@@ -1,9 +1,8 @@
 package com.sparetimedevs.weeklyachievements.login
 
-import org.springframework.hateoas.ResourceSupport
-
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
+import org.springframework.hateoas.ResourceSupport
 
 data class Login @JsonCreator constructor(
         @param:JsonProperty("emailAddress")

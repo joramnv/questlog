@@ -1,7 +1,7 @@
 package com.sparetimedevs.weeklyachievements.login.exception
 
 import org.springframework.http.HttpHeaders
-import org.springframework.http.HttpStatus
+import org.springframework.http.HttpStatus.UNAUTHORIZED
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
@@ -13,6 +13,6 @@ class LoginResponseEntityExceptionHandler : ResponseEntityExceptionHandler() {
 
     @ExceptionHandler(value = [EmailAddressPasswordDoNotMatchException::class, IllegalArgumentException::class, IllegalStateException::class])
     fun handleConflict(ex: RuntimeException, request: WebRequest): ResponseEntity<Any> {
-        return handleExceptionInternal(ex, ex.message, HttpHeaders(), HttpStatus.UNAUTHORIZED, request)
+        return handleExceptionInternal(ex, ex.message, HttpHeaders(), UNAUTHORIZED, request)
     }
 }

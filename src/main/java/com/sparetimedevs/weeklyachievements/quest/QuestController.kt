@@ -2,13 +2,13 @@ package com.sparetimedevs.weeklyachievements.quest
 
 import com.sparetimedevs.weeklyachievements.user.User
 import org.springframework.data.rest.webmvc.support.RepositoryEntityLinks
-import org.springframework.hateoas.MediaTypes
+import org.springframework.hateoas.MediaTypes.HAL_JSON_VALUE
 import org.springframework.hateoas.Resources
-import org.springframework.http.HttpStatus
+import org.springframework.http.HttpStatus.OK
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestMethod
+import org.springframework.web.bind.annotation.RequestMethod.GET
 import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.bind.annotation.RestController
 import java.util.UUID
@@ -18,7 +18,7 @@ class QuestController(
 		private val repositoryEntityLinks: RepositoryEntityLinks,
 		private val questRepository: QuestRepository
 ) {
-	@RequestMapping(method = [RequestMethod.GET], produces = [(MediaTypes.HAL_JSON_VALUE)], path = ["/quests/user/{userId}"])
+	@RequestMapping(method = [GET], produces = [HAL_JSON_VALUE], path = ["/quests/user/{userId}"])
 	@ResponseBody
 	fun findUserQuests(@PathVariable(value = "userId") userId: UUID): ResponseEntity<Resources<Quest>> {
 		val userQuests = questRepository.findByUserId(userId)
@@ -27,6 +27,6 @@ class QuestController(
 
 		val linkToUser = repositoryEntityLinks.linkToSingleResource(User::class.java, userId)
 		userQuestsResources.add(linkToUser)
-		return ResponseEntity(userQuestsResources, HttpStatus.OK)
+		return ResponseEntity(userQuestsResources, OK)
 	}
 }

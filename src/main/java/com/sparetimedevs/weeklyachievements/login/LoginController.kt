@@ -8,7 +8,7 @@ import org.springframework.hateoas.Resource
 import org.springframework.hateoas.Resources
 import org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo
 import org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn
-import org.springframework.http.HttpStatus
+import org.springframework.http.HttpStatus.OK
 import org.springframework.http.MediaType.APPLICATION_JSON_VALUE
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RequestBody
@@ -38,7 +38,7 @@ class LoginController(
 		login.add(linkToUserQuests)
 		login.add(linkToUserPassword)
 
-		return ResponseEntity(login, HttpStatus.OK)
+		return ResponseEntity(login, OK)
 	}
 
 	@RequestMapping(method = [GET], produces = [HAL_JSON_VALUE])

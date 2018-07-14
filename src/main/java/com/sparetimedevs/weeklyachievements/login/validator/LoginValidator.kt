@@ -17,7 +17,7 @@ class LoginValidator(
         val userPassword = userPasswordService.getUserPassword(userId)
 
         if (login.password != userPassword.password) {
-            throw EmailAddressPasswordDoNotMatchException("E-mail address password combination do not match for e-mail address " + login.emailAddress + ".") //TODO catch this somewhere in apiresponse and throw some api error code/response
+            throw EmailAddressPasswordDoNotMatchException("E-mail address password combination do not match for e-mail address " + login.emailAddress + ".")
         }
 	    return userId
     }
